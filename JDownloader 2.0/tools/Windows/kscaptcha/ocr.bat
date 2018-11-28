@@ -1,0 +1,1 @@
+node.exe ocr.js
