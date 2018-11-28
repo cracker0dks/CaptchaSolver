@@ -4,10 +4,7 @@ var fs = require('fs');
 
 var white = Jimp.rgbaToInt(255, 255, 255, 255);
 var colorBuffer = {};
-var bandColors = [{
-    color: 0,
-    cnt: 0
-}];
+var bandColors = [];
 var borderColors = {};
 console.log("Running");
 getText('input.gif', function(content) {
@@ -43,10 +40,6 @@ function getText(file, callback) {
                         bandColors.push({ "color": k });
                     }
                     for (var i in colorBuffer) {
-                        if (bandColors[0]["cnt"] < colorBuffer[i] && i != white) {
-                            bandColors[0]["cnt"] = colorBuffer[i];
-                            bandColors[0]["color"] = i;
-                        }
                         if (colorBuffer[i] < 100) { //Remove all colors witch are not very present in the img (<100 pixels in the image)
                             bandColors.push({ "color": i });
                         }
@@ -82,7 +75,6 @@ function getText(file, callback) {
                                     });
                                 });
                             })
-
                         }
                     });
                 }
