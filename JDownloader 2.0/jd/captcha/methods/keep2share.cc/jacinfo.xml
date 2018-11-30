@@ -1,4 +1,4 @@
 <jDownloader>
-  <method type="extern" os="windows" name="keep2share.cc" services="keep2share.cc;linksnappy.com"/>
+  <method type="extern" os="windows" name="keep2share.cc" services="keep2share.cc;linksnappy.com;fileboom.me"/>
   <command cmd="tools\Windows\kscaptcha\ocr.bat" src="tools\Windows\kscaptcha\input.gif" dst="tools\Windows\kscaptcha\result.txt" />
 </jDownloader>
