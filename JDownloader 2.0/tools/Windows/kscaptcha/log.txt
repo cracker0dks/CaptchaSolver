@@ -1,1 +1,1 @@
-{"text":"VimoWiy","confidence":72}
+{"host":"przeklej.org","text":"","confidence":0}
