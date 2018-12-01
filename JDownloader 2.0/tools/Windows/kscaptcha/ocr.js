@@ -8,7 +8,7 @@ var black = Jimp.rgbaToInt(0, 0, 0, 255);
 var gray = Jimp.rgbaToInt(200, 200, 200, 255);
 
 var inputPic = 'input.gif';
-//inputPic = 'keep2share.cc_02.11.2018_13.23.05.340.jpg';
+//inputPic = 'xFQIX.jpg';
 console.log("Running ->", what2Scan);
 
 if (what2Scan == "keep2share.cc") {
@@ -36,6 +36,27 @@ if (what2Scan == "keep2share.cc") {
     })
 } else {
     console.log("No function found for: ", what2Scan);
+    Jimp.read("imp.jpg").then(image => {
+        getImageSegmentsAsImgs(image, white, function(binArray, partIndexs) {
+            for(var i in partIndexs) {
+                (function() {
+                    var index = i;
+                    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
+                        for(var y=0;y<binArray.length;y++) {
+                            for(var x=0; x<binArray.length;x++) {
+                                if(binArray[y][x]==partIndexs[index]) {
+                                    newImage.setPixelColor(black, x, y);
+                                }                            
+                            }
+                        }
+                        newImage.write('temp'+index+'.jpg', function () {
+
+                        });
+                    });
+                })();
+            }
+        })
+    });
 }
 
 function getPrzeklejText(file, callback) {
@@ -50,21 +71,37 @@ function getPrzeklejText(file, callback) {
                 image.setPixelColor(white, x, y);
             }
             if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
-                image.resize( 250, Jimp.AUTO );
+
                 changeAllPresentPixelsToBlack(image, function (image) {
-                    removeSpikes(image, 3, function (image) {
-                        fillGaps(image, 1, function (image) {
-                            image.write('temp.jpg', function () {
-                                fs.readFile('temp.jpg', function (err, data) {
-                                    // Tesseract.recognize(data).then(function (result) {
-                                    //     var text = result["text"].replace(/\W/g, '');
-                                    //     var confidence = result["confidence"];
-                                    //     callback({ host : what2Scan, text: text, confidence: confidence });
-                                    // })
+                    getImageSegmentsAsImgs(image, white, function(OrgImage, binArray, imgParts) {
+                        // console.log(partIndexs);
+                        for(var i = 0; i<imgParts.length;i++) {
+                            (function() {
+                                var index = i;
+                                var newImage = imgParts[index];
+                                newImage.resize( 200, Jimp.AUTO );
+                                changeAllPresentPixelsToBlack(newImage, function (newImage) {
+                                    fillGaps(newImage, 1, function (newImage) {
+                                        thinOut(newImage, 2, function (newImage) {
+                                            newImage.write('temp'+index+'.jpg', function () {
+                
+                                            });
+                                        });
+                                    });
                                 });
-                            });
+                            })();
+                        }
+                        
+                        OrgImage.write('temp.jpg', function () {
+                            //fs.readFile('temp.jpg', function (err, data) {
+                                // Tesseract.recognize(data).then(function (result) {
+                                //     var text = result["text"].replace(/\W/g, '');
+                                //     var confidence = result["confidence"];
+                                //     callback({ host : what2Scan, text: text, confidence: confidence });
+                                // })
+                            //});
                         });
-                    });
+                    })
                 });
             }
         });
@@ -144,6 +181,100 @@ function getKeep2shareSText(file, callback) {
     });
 }
 
+function getImageSegmentsAsImgs(image, backGroundColor, callback) {
+    var binArray = [];
+    var matchObj = {};
+    var sgmntCnt = 1;
+    image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+        var color = image.getPixelColor(x, y);
+        if(!binArray[y]) {
+            binArray[y] = [];
+        }
+        if(color != backGroundColor) {
+            //Segment image as shown in https://www.youtube.com/watch?v=ticZclUYy88
+            if(y-1 >= 0 && binArray[y-1] && binArray[y-1][x]) {
+                binArray[y][x] = binArray[y-1][x];
+                if(x-1 >=0 && binArray[y] && binArray[y][x-1] >0 && binArray[y][x-1] != binArray[y][x]) {
+                    if(!matchObj[binArray[y][x-1]]) {
+                        matchObj[binArray[y][x-1]] = {};
+                    }
+                    if(binArray[y][x-1] > binArray[y][x]) {
+                        matchObj[binArray[y][x-1]][binArray[y][x]] = binArray[y][x];
+                    } else {
+                        if(!matchObj[binArray[y][x]]) {
+                            matchObj[binArray[y][x]] = {};
+                        }
+                       matchObj[binArray[y][x]][binArray[y][x-1]] = binArray[y][x-1];
+                    }
+                   
+                }
+
+            } else if(x-1 >=0 && binArray[y] && binArray[y][x-1]) {
+                binArray[y][x] = binArray[y][x-1];
+            } else if(y-1 >= 0 && x-1 >=0 && binArray[y-1] && binArray[y-1][x-1]) {
+                binArray[y][x] = binArray[y-1][x-1];
+            } else {
+                binArray[y][x] = sgmntCnt;
+                sgmntCnt++;
+            }
+        } else {
+            binArray[y][x] = 0;
+        }
+        if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
+            var partIndexs = {};
+            for(var y=0;y<binArray.length;y++) {
+                for(var x=0; x<binArray[y].length;x++) {
+                    if(binArray[y][x] > 0 && matchObj[binArray[y][x]]) {
+                        binArray[y][x] = getLastChainElement(matchObj, binArray[y][x]);
+                        
+                        partIndexs[binArray[y][x]] = binArray[y][x];
+                    }
+                }
+            }
+            
+            var callBackCnt = 0;
+            var imgArray = [];
+            for(var i in partIndexs) {
+                callBackCnt++;
+                (function() {
+                    var index = i;
+                    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
+                        for(var y=0;y<binArray.length;y++) {
+                            for(var x=0; x<binArray[y].length;x++) {
+                                if(binArray[y][x]==index) {
+                                    newImage.setPixelColor(black, x, y); //Draw the segments to new images
+                                }                            
+                            }
+                        }
+
+                        imgArray.push(newImage);
+                        callBackCnt--;
+                        if(callBackCnt <=0) {
+                            callback(image, binArray, imgArray);
+                        }
+                    });
+                })();
+            }
+            
+        }
+    });
+}
+
+function getLastChainElement(matchObj, nr) {
+    if(!matchObj[nr]) {
+        return nr;
+    } else {
+        var smallest = null;
+        for(var i in matchObj[nr]) {
+            var newNr = getLastChainElement(matchObj, matchObj[nr][i]);
+            if(!smallest || smallest > newNr) {
+                smallest = newNr;
+            }
+        }
+        return smallest;
+    }
+}
+
 function changeAllPresentPixelsToBlack(image, callback) {
     image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
         var color = image.getPixelColor(x, y);
@@ -209,7 +340,6 @@ function thinOut(image, iterations, callback) {
             }
 
             if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
-                callback(newImage);
                 if(iterations<=0) {
                     callback(newImage);
                 } else {
@@ -270,7 +400,6 @@ function removeSpikes(image, iterations, callback) {
             }
 
             if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
-                callback(newImage);
                 if(iterations<=0) {
                     callback(newImage);
                 } else {
