@@ -5,11 +5,15 @@ var fs = require('fs');
 var what2Scan = process.argv[2] || "keep2share.cc"; //Start parameter
 var white = Jimp.rgbaToInt(255, 255, 255, 255);
 var black = Jimp.rgbaToInt(0, 0, 0, 255);
+var gray = Jimp.rgbaToInt(200, 200, 200, 255);
 
+var inputPic = 'input.gif';
+//inputPic = 'keep2share.cc_02.11.2018_13.23.05.340.jpg';
 console.log("Running ->", what2Scan);
 
 if (what2Scan == "keep2share.cc") {
-    getKeep2shareSText('input.gif', function (content) {
+	console.log("keep2share.cc");
+    getKeep2shareSText(inputPic, function (content) {
         fs.writeFile('result.txt', content["text"], (err) => {
             if (err) throw err;
 
@@ -20,7 +24,7 @@ if (what2Scan == "keep2share.cc") {
 
     })
 } else  if (what2Scan == "przeklej.org") {
-    getPrzeklejText('xFQIX.jpg', function (content) {
+    getPrzeklejText(inputPic, function (content) {
         fs.writeFile('result.txt', content["text"], (err) => {
             if (err) throw err;
 
@@ -101,7 +105,7 @@ function getKeep2shareSText(file, callback) {
                 image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
                     var color = image.getPixelColor(x, y);
                     var rgbColor = Jimp.intToRGBA(color);
-                    if(rgbColor["r"] > 200 && rgbColor["g"] > 200 && rgbColor["b"] > 200) { //Very light gray ->remove
+                    if(!isColorVisableWellOnWhite(rgbColor)) { //remove colors that are barley seen
                         image.setPixelColor(white, x, y);
                     }
 
@@ -275,4 +279,28 @@ function removeSpikes(image, iterations, callback) {
             }
         })
     });
+}
+
+function luminanace(r, g, b) {
+    var a = [r, g, b].map(function (v) {
+        v /= 255;
+        return v <= 0.03928
+            ? v / 12.92
+            : Math.pow( (v + 0.055) / 1.055, 2.4 );
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+
+//contrast([255, 255, 255], [255, 255, 0]); 1.074 for yellow
+//contrast([255, 255, 255], [0, 0, 255]); // 8.592 for blue
+function contrast(rgb1, rgb2) {
+    return (luminanace(rgb1["r"], rgb1["g"], rgb1["b"]) + 0.05)
+         / (luminanace(rgb2["r"], rgb2["g"], rgb2["b"]) + 0.05);
+}
+
+function isColorVisableWellOnWhite(rgbColor) {
+    if(contrast(Jimp.intToRGBA(white), rgbColor) < 2 && rgbColor["r"] > 150 && rgbColor["g"] > 150 && rgbColor["b"] > 150) {
+        return false;
+    }
+    return true;
 }
