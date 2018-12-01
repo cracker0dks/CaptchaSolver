@@ -36,27 +36,6 @@ if (what2Scan == "keep2share.cc") {
     })
 } else {
     console.log("No function found for: ", what2Scan);
-    Jimp.read("imp.jpg").then(image => {
-        getImageSegmentsAsImgs(image, white, function(binArray, partIndexs) {
-            for(var i in partIndexs) {
-                (function() {
-                    var index = i;
-                    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
-                        for(var y=0;y<binArray.length;y++) {
-                            for(var x=0; x<binArray.length;x++) {
-                                if(binArray[y][x]==partIndexs[index]) {
-                                    newImage.setPixelColor(black, x, y);
-                                }                            
-                            }
-                        }
-                        newImage.write('temp'+index+'.jpg', function () {
-
-                        });
-                    });
-                })();
-            }
-        })
-    });
 }
 
 function getPrzeklejText(file, callback) {
@@ -73,18 +52,36 @@ function getPrzeklejText(file, callback) {
             if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
 
                 changeAllPresentPixelsToBlack(image, function (image) {
-                    getImageSegmentsAsImgs(image, white, function(OrgImage, binArray, imgParts) {
+                    getImageSegmentsAsImgs(image, white, function(OrgImage, binArray, imgArray) {
                         // console.log(partIndexs);
-                        for(var i = 0; i<imgParts.length;i++) {
+                        var callBackCnt = 0;
+                        var finalWordArray = [];
+                        var endConfidents = "";
+                        for(var i = 0; i<imgArray.length;i++) {
+                            callBackCnt++;
                             (function() {
                                 var index = i;
-                                var newImage = imgParts[index];
+                                var newImage = imgArray[index]["img"];
                                 newImage.resize( 200, Jimp.AUTO );
                                 changeAllPresentPixelsToBlack(newImage, function (newImage) {
                                     fillGaps(newImage, 1, function (newImage) {
                                         thinOut(newImage, 2, function (newImage) {
-                                            newImage.write('temp'+index+'.jpg', function () {
+                                            // newImage.write('temp'+index+'.jpg', function () { //Print all segments of the image
                 
+                                            // });
+                                            newImage.getBuffer(Jimp.MIME_JPEG, function(err, data){
+                                                Tesseract.recognize(data).then(function (result) {
+                                                    var text = result["text"].replace(/\W/g, '');
+                                                    var confidence = result["confidence"];
+                                                    endConfidents += " Letter"+index+": "+text+" => "+confidence+"%";
+                                                    finalWordArray[index] = text;
+                                                    callBackCnt--;
+                                                    if(callBackCnt<=0) {
+                                                        var finalWord = finalWordArray.join("");
+                                                        console.log(finalWord);
+                                                        callback({ host : what2Scan, text: finalWord, confidence: endConfidents });
+                                                    }
+                                                })
                                             });
                                         });
                                     });
@@ -93,13 +90,7 @@ function getPrzeklejText(file, callback) {
                         }
                         
                         OrgImage.write('temp.jpg', function () {
-                            //fs.readFile('temp.jpg', function (err, data) {
-                                // Tesseract.recognize(data).then(function (result) {
-                                //     var text = result["text"].replace(/\W/g, '');
-                                //     var confidence = result["confidence"];
-                                //     callback({ host : what2Scan, text: text, confidence: confidence });
-                                // })
-                            //});
+                            //Save img without white noise just for fun
                         });
                     })
                 });
@@ -233,24 +224,37 @@ function getImageSegmentsAsImgs(image, backGroundColor, callback) {
             }
             
             var callBackCnt = 0;
-            var imgArray = [];
+            var imgObj = {};
             for(var i in partIndexs) {
                 callBackCnt++;
                 (function() {
                     var index = i;
+                    imgObj[index] = {};
                     new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
                         for(var y=0;y<binArray.length;y++) {
                             for(var x=0; x<binArray[y].length;x++) {
                                 if(binArray[y][x]==index) {
+                                    //Search for the pixel most left and most top for the correct parse order
+                                    imgObj[index]["lx"] = imgObj[index]["lx"] && imgObj[index]["lx"]<x ? imgObj[index]["lx"] : x;
+                                    imgObj[index]["ly"] = imgObj[index]["ly"] && imgObj[index]["ly"]<y ? imgObj[index]["ly"] : y;
                                     newImage.setPixelColor(black, x, y); //Draw the segments to new images
                                 }                            
                             }
                         }
 
-                        imgArray.push(newImage);
+                        imgObj[index]["img"] = newImage;
                         callBackCnt--;
                         if(callBackCnt <=0) {
-                            callback(image, binArray, imgArray);
+                            var retArray = [];
+                            for(var k in imgObj) {
+                                retArray.push(imgObj[k]);
+                            }
+                            retArray = retArray.sort(function(a,b) {
+                                if(a["lx"]>b["lx"]) 
+                                    return 1;
+                                return -1;
+                            });
+                            callback(image, binArray, retArray);
                         }
                     });
                 })();

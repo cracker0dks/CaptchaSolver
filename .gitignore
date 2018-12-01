@@ -30,3 +30,6 @@ build/Release
 node_modules
 
 /JDownloader 2.0/tools/Windows/kscaptcha/*.traineddata
+/JDownloader 2.0/tools/Windows/kscaptcha/log.txt
+/JDownloader 2.0/tools/Windows/kscaptcha/result.txt
+/JDownloader 2.0/tools/Windows/kscaptcha/temp.jpg
