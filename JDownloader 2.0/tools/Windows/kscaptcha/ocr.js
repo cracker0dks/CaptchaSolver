@@ -49,8 +49,9 @@ function getPrzeklejText(file, callback) {
             if(x==0||y==0||x==image.bitmap.width-1||y==image.bitmap.height-1) {
                 image.setPixelColor(white, x, y);
             }
+            
             if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
-
+                
                 changeAllPresentPixelsToBlack(image, function (image) {
                     getImageSegmentsAsImgs(image, white, function(OrgImage, binArray, imgArray) {
                         // console.log(partIndexs);
@@ -182,7 +183,7 @@ function getImageSegmentsAsImgs(image, backGroundColor, callback) {
             binArray[y] = [];
         }
         if(color != backGroundColor) {
-            //Segment image as shown in https://www.youtube.com/watch?v=ticZclUYy88
+            //Image segmentation as shown in https://www.youtube.com/watch?v=ticZclUYy88
             if(y-1 >= 0 && binArray[y-1] && binArray[y-1][x]) {
                 binArray[y][x] = binArray[y-1][x];
                 if(x-1 >=0 && binArray[y] && binArray[y][x-1] >0 && binArray[y][x-1] != binArray[y][x]) {
@@ -241,7 +242,6 @@ function getImageSegmentsAsImgs(image, backGroundColor, callback) {
                                 }                            
                             }
                         }
-
                         imgObj[index]["img"] = newImage;
                         callBackCnt--;
                         if(callBackCnt <=0) {
