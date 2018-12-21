@@ -8,7 +8,7 @@ var black = Jimp.rgbaToInt(0, 0, 0, 255);
 var gray = Jimp.rgbaToInt(200, 200, 200, 255);
 
 var inputPic = 'input.gif';
-//inputPic = 'xFQIX.jpg';
+//inputPic = 'c2.PNG';
 console.log("Running ->", what2Scan);
 
 if (what2Scan == "keep2share.cc") {
@@ -36,6 +36,72 @@ if (what2Scan == "keep2share.cc") {
     })
 } else {
     console.log("No function found for: ", what2Scan);
+}
+
+//Solving dfiles.eu captchas
+function getDfilesText(file, callback) {
+    Jimp.read(file).then(image => {
+        image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+            var color = image.getPixelColor(x, y);
+            var rgbColor = Jimp.intToRGBA(color);
+
+            if(y< 10 || x < 10 || x > image.bitmap.width -10) { //Remove header text & side pixels
+                image.setPixelColor(white, x, y);
+            } else if(rgbColor["r"]>200 && rgbColor["g"]>200 && rgbColor["b"]>200) { //remove light background
+                image.setPixelColor(white, x, y);
+            }
+           
+            if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
+                image.background( white );
+                var orgImg = image.clone();
+                getAngleToStraightTheImage(image, 0, 1, image.bitmap.height, 0, function(angleToRotate) {
+                    orgImg.rotate( angleToRotate );
+                    changeAllPresentPixelsToBlack(orgImg, function(orgImg) {
+                        //fillHoles(orgImg, 1, function(orgImg) {
+                            //removeSpikes(orgImg, 1, function(orgImg) {
+                                orgImg.write('temp.jpg', function () { //Print current image
+                                    callback();
+                                });
+                            //})
+                        //})
+                    })
+                })
+                
+            }
+        });
+    }).catch(err => {
+        console.log(err);
+        // Handle an exception.
+    });
+} 
+
+//Get the angle in witch the img is more "straight"
+//Give it a copy of you Img!
+function getAngleToStraightTheImage(image, maxYPixel, round, OrgHeight, angle, callback) {
+    for(var y=0;y<image.bitmap.height;y++) {
+        for(var x=0;x<image.bitmap.width;x++) {
+            var color = image.getPixelColor(x, y)
+            var rgbColor = Jimp.intToRGBA(color);
+            if(color!=white && color!=black && color!=0 && color!=4294967045) { //Color pixel found
+                if(maxYPixel<=y && round == 1) {
+                    //console.log("t",maxYPixel,y, color);
+                    image.rotate( 1 ).resize(Jimp.AUTO,OrgHeight);
+                    angle++;
+                    getAngleToStraightTheImage(image, y, round, OrgHeight,angle, callback);
+                    
+                } else if(maxYPixel<y) {
+                    round=2;
+                    //console.log("b",maxYPixel,y, color);
+                    image.rotate( -1 ).resize(Jimp.AUTO,OrgHeight);
+                    angle--;
+                    getAngleToStraightTheImage(image, y, round, OrgHeight,angle, callback)
+                } else {
+                    callback(angle+1);
+                }
+                return;
+            }
+        }
+    }
 }
 
 //Solving przeklej.org captchas
@@ -321,6 +387,68 @@ function fillGaps(image, iterations, callback) {
                     callback(newImage);
                 } else {
                     fillGaps(newImage, iterations, callback);
+                }
+            }
+        })
+    });
+}
+
+//Remove every pixel with a white pixel neighbor
+function fillHoles(image, iterations, callback) {
+    iterations--;
+    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
+        image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+            var color = image.getPixelColor(x, y);
+
+            if(color == white) {
+                var l = image.getPixelColor(x - 1, y);
+                var r = image.getPixelColor(x + 1, y);
+                var t = image.getPixelColor(x, y + 1);
+                var b = image.getPixelColor(x, y - 1);
+
+                var lb = image.getPixelColor(x - 1, y - 1);
+                var lt = image.getPixelColor(x - 1, y + 1);
+                var rt = image.getPixelColor(x + 1, y + 1);
+                var rb = image.getPixelColor(x + 1, y - 1);
+
+                var colorCnt = 0;
+                if (l != white) {
+                    colorCnt++;
+                } 
+                if(r != white) {
+                    colorCnt++;
+                } 
+                if(t != white) {
+                    colorCnt++;
+                } 
+                if(b != white) {
+                    colorCnt++;
+                } 
+                if(lb != white) {
+                    colorCnt++;
+                } 
+                if(lt != white) {
+                    colorCnt++;
+                } 
+                if(rt != white) {
+                    colorCnt++;
+                } 
+                if(rb != white) {
+                    colorCnt++;
+                }
+
+                if(colorCnt>=4) {
+                    newImage.setPixelColor(black, x, y);
+                }
+            } else {
+                newImage.setPixelColor(color, x, y);
+            }
+
+            if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
+                if(iterations<=0) {
+                    callback(newImage);
+                } else {
+                    fillHoles(newImage, iterations, callback);
                 }
             }
         })
