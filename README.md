@@ -7,7 +7,7 @@ This tool is running in NodeJs with [JIMP](https://github.com/oliver-moran/jimp)
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2
 
-After installing you probably see one more captcha because npm deps will be installed on the first call.
+After installation you probably see one more captcha because npm deps will be installed on the first call.
 
 Will not work on Linux and Mac...
 
