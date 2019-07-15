@@ -401,7 +401,7 @@ function fillGaps(image, iterations, callback) {
     });
 }
 
-//Remove every pixel with a white pixel neighbor
+//Only fill holes (white pixels with surounding pixels of other color)
 function fillHoles(image, iterations, callback) {
     iterations--;
     new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
@@ -577,7 +577,7 @@ function contrast(rgb1, rgb2) {
         / (luminanace(rgb2["r"], rgb2["g"], rgb2["b"]) + 0.05);
 }
 
-//Returns true if the given color is readable on white background
+//Returns true if the given color is "readable" for humans on white background
 function isColorVisableWellOnWhite(rgbColor) {
     if (contrast(Jimp.intToRGBA(white), rgbColor) < 2 && rgbColor["r"] > 150 && rgbColor["g"] > 150 && rgbColor["b"] > 150) {
         return false;
