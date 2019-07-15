@@ -2,8 +2,8 @@
 
 ## Tools used ##
 * NodeJs
-* OCR -> tesseract.js 
-* Image processing -> jimp
+* OCR -> [tesseract.js](https://github.com/naptha/tesseract.js?files=1)
+* Image processing -> [jimp](https://github.com/oliver-moran/jimp)
 
 ## Problem description ##
 
@@ -44,7 +44,7 @@ It is time for the next round of OCR:
 
 At this point, I thought I would be done, and we get a nice result, but not a even close one...
 
-So I tried to "fill gaps" and make it "thin" like in my latest post, on what I got success with... But the image is a lot smaller so I scaled it up a to work with... but no luck. The OCR did not like it... Always returns the same result => "thq"
+So I tried to "fill gaps" and make it "thin" like in my [other docu](howToSolve6DigitCaptchasWalkthrough.md), on what I got success with... But the image is a lot smaller so I scaled it up a to work with... but no luck. The OCR did not like it... Always returns the same result => "thq"
 
 My explanation for this is: Even tough the OCR is trained to detect letters AND numbers, it is not used to a number inside a "word" -> Not common in the english language. So it assumes the "2" must be a letter as well...
 
