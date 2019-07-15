@@ -20,7 +20,7 @@ Known Hosts with this captcha:
 * keep2share.cc
 * fileboom.me
 
-Docu on how I solved the Captcha: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
+Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
 
 ### 4 Digits Captcha
 ![ks](/docs/xFQIX.png)
@@ -28,7 +28,7 @@ Docu on how I solved the Captcha: [HERE](docs/howToSolve6DigitCaptchasWalkthroug
 Known Hosts with this captcha:
 * przeklej.org
 
-Docu on how I solved the Captcha: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
+Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
 
 ---------------------
 If you know any other Hosts that uses the same Captcha, feel free to open an issue!
