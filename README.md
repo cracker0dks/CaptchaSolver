@@ -3,13 +3,13 @@ This Tool automatically solves Captchas for you! JDownloader already solves a lo
 
 This tool is running in NodeJs with [JIMP](https://github.com/oliver-moran/jimp) for image processing and [tesseract.js ](https://github.com/naptha/tesseract.js) for OCR
 ## Windows Installation
-1. Download a release or clone this repo
+1. Download the latest standalone zip: [here](https://github.com/cracker0dks/CaptchaSolver/releases/download/1.4.1_standalone/CaptchaSolver_1.4.1_standalone.zip)
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2
 
-After installation you probably see one more captcha because npm deps will be installed on the first call.
-
 Will not work on Linux and Mac...
+
+The standalone version should work out of the box without installing npm or any other.
 
 ## Supported Types of Captchas
 This is a list of supported Captchas and the hosts, I know, are using them.
