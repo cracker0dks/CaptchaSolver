@@ -173,7 +173,7 @@ function getPrzeklejText(file, callback) {
 //Solving keep2share.cc captchas
 function getKeep2shareSText(file, callback) {
     var colorBuffer = {};
-    var bandColors = [];
+    var bandColors = {};
     var borderColorsTop = {};
     var borderColorsBot = {};
     Jimp.read(file).then(image => {
@@ -197,13 +197,13 @@ function getKeep2shareSText(file, callback) {
 
                 for (var k in borderColorsTop) { //Ban all colors that are represented in the top AND bottom 10 pixels of the image (So if the text is moved to the top we do not ban the text color!)
                     if (borderColorsBot[k]) {
-                        bandColors.push({ "color": k });
+                        bandColors[k] = true;
                     }
                 }
 
                 for (var i in colorBuffer) {
-                    if (colorBuffer[i] < 100) { //Remove all colors witch are not very present in the img (contrast is very low)
-                        bandColors.push({ "color": i });
+                    if (colorBuffer[i] < 100) { //Remove all colors witch are not very present in the img (less then 100 pixels of this color)
+                        bandColors[i] = true;
                     }
                 }
 
@@ -212,14 +212,12 @@ function getKeep2shareSText(file, callback) {
                     var rgbColor = Jimp.intToRGBA(color);
                     if (!isColorVisableWellOnWhite(rgbColor)) { //remove colors that are barley seen
                         image.setPixelColor(white, x, y);
-                    }
-
-                    for (var k in bandColors) {
-                        var clEntry = bandColors[k];
-
-                        if (color == clEntry["color"]) {
-                            image.setPixelColor(white, x, y);
-                            break;
+                    } else {
+                        for (var k in bandColors) {
+                            if (color == k) {
+                                image.setPixelColor(white, x, y);
+                                break;
+                            }
                         }
                     }
 
@@ -227,15 +225,15 @@ function getKeep2shareSText(file, callback) {
                         fillGaps(image, 3, function (image) {
                             thinOut(image, 2, function (image) {
                                 changeAllPresentPixelsToBlack(image, function (image) {
-                                    image.write('temp.jpg', function () {
-                                        fs.readFile('temp.jpg', function (err, data) {
-                                            Tesseract.recognize(data).then(function (result) {
-                                                var text = result["text"].replace(/\W/g, '');
-                                                var confidence = result["confidence"];
-                                                callback({ host: what2Scan, text: text, confidence: confidence });
-                                            })
-                                        });
-                                    });
+                                    image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
+                                        Tesseract.recognize(data).then(function (result) {
+                                            var text = result["text"].replace(/\W/g, '');
+                                            var confidence = result["confidence"];
+                                            callback({ host: what2Scan, text: text, confidence: confidence });
+                                        })
+                                    })
+                                    // image.write('temp.jpg', function () { //Write result back as image
+                                    // });
                                 });
                             });
                         })
