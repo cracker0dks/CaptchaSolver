@@ -138,7 +138,11 @@ function getPrzeklejText(file, callback) {
 
                                             // });
                                             newImage.getBuffer(Jimp.MIME_JPEG, function (err, data) {
-                                                Tesseract.recognize(data).then(function (result) {
+                                                Tesseract.recognize(data, {
+                                                    tessedit_pageseg_mode: 'PSM_SINGLE_CHAR',
+                                                    tessedit_char_blacklist: '!?',
+                                                    tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+                                                }).then(function (result) {
                                                     var text = result["text"].replace(/\W/g, '');
                                                     var confidence = result["confidence"];
                                                     endConfidents += " Letter" + index + ": " + text + " => " + confidence + "%";
@@ -226,7 +230,10 @@ function getKeep2shareSText(file, callback) {
                             thinOut(image, 2, function (image) {
                                 changeAllPresentPixelsToBlack(image, function (image) {
                                     image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
-                                        Tesseract.recognize(data).then(function (result) {
+                                        Tesseract.recognize(data, {
+                                            tessedit_char_blacklist: '0123456789!?',
+                                            tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+                                        }).then(function (result) {
                                             var text = result["text"].replace(/\W/g, '');
                                             var confidence = result["confidence"];
                                             callback({ host: what2Scan, text: text, confidence: confidence });
