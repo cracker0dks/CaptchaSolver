@@ -175,4 +175,4 @@ DONE!
 
 Tesseract also outputs how confident it is about the result. For the result image above it’s 72%. Thats not perfect, but is also not a problem if we want to use it for solving download captchas.
 
-I also tested on a lot of other images and it got about 90% correct results… even if I (with my eyes) wasn’t able to solve it! So no need to improve the algorithm futher atm 🙂
+I also tested on a lot of other images and it got about 90% correct results… even if I (with my eyes) wasn’t able to solve it! So no need to improve the algorithm further atm 🙂
