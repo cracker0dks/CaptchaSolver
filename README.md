@@ -4,11 +4,9 @@ This Tool automatically solves Captchas for you! JDownloader already solves a lo
 This tool is running in NodeJs with [JIMP](https://github.com/oliver-moran/jimp) for image processing and [tesseract.js ](https://github.com/naptha/tesseract.js) for OCR
 
 ## Installation Windows, Linux (Beta), Mac (Untested)
-1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/untagged-7d1f90fd4b27d2602ed5/CaptchaSolver-1.4.3_standalone_win.zip) OR [linux & mac](https://github.com/cracker0dks/CaptchaSolver/releases/download/untagged-7d1f90fd4b27d2602ed5/CaptchaSolver-1.4.3_standalone_linux.zip)
+1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/untagged-7d1f90fd4b27d2602ed5/CaptchaSolver-1.4.3_standalone_win.zip) OR [linux & mac](https://github.com/cracker0dks/CaptchaSolver/releases/download/untagged-747e930d6644213e0ab1/CaptchaSolver-1.4.3_standalone_linux.zip)
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2 and start downloading
-
-DONE!
 
 ## Supported Types of Captchas
 This is a list of supported Captchas and the hosts, I know, are using them.
@@ -30,8 +28,6 @@ Known Hosts with this captcha:
 Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
 
 ---------------------
-If you know any other Hosts that uses the same Captcha, feel free to open an issue!
 
----------------------
-Thanks to [budel](https://github.com/budel) for the linux scripts!
+Thanks to [budel](https://github.com/budel) for the linux part!
 
