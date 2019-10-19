@@ -1,4 +1,0 @@
-<jDownloader>
-  <method type="extern" os="linux" name="kscaptcha" services="keep2share.cc;fileboom.me;depositfiles.com;" />
-  <command cmd="tools/linux/offlineCaptchaSolver/keep2share.cc.sh" src="tools/linux/offlineCaptchaSolver/input.gif" dst="tools/linux/offlineCaptchaSolver/result.txt" />
-</jDownloader>

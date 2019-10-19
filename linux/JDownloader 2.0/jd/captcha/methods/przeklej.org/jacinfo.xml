@@ -1,4 +1,0 @@
-<jDownloader>
-  <method type="extern" os="linux" name="przeklej" services="przeklej.org;" />
-  <command cmd="tools/linux/offlineCaptchaSolver/przeklej.org.sh" src="tools/linux/offlineCaptchaSolver/input.gif" dst="tools/linux/offlineCaptchaSolver/result.txt" />
-</jDownloader>
