@@ -1,4 +1,4 @@
-## WARNING: keep2share and fileboom changed their captchas to an other type... so this is not working until its fixed!
+## WARNING: keep2share and fileboom changed their captchas to an other type... so this is not working until its fixed! Take a look here: https://github.com/cracker0dks/CaptchaSolver/issues/4
 
 ---------------------------
 
