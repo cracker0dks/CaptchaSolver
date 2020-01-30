@@ -1,3 +1,7 @@
+## WARNING: keep2share and fileboom changed their captchas to an other type... so this is not working until its fixed!
+
+---------------------------
+
 # JDownloader 2 Offline Captcha solver
 JDownloader already solves a lot of captchas on its own, but for some hosts you have to input the result by hand. This tool reduces the list of unsupported hosts.
 
