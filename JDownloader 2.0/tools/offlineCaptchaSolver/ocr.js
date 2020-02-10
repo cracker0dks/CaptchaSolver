@@ -1,19 +1,26 @@
-var Tesseract = require('tesseract.js'); //For OCR
+tracking = {};
+require('./trackingjs_fast');
+require('./trackingjs_brief');
+require('./trackingjs_img');
+
+require('./dbimg/modDesc.js');
 var Jimp = require('jimp'); //For image processing
 var fs = require('fs');
 
 var what2Scan = process.argv[2] || "keep2share.cc"; //Start parameter
 var white = Jimp.rgbaToInt(255, 255, 255, 255);
 var black = Jimp.rgbaToInt(0, 0, 0, 255);
+var red = Jimp.rgbaToInt(255, 0, 0, 255);
 var gray = Jimp.rgbaToInt(200, 200, 200, 255);
 
 var inputPic = 'input.gif';
 //inputPic = 'c2.PNG';
 console.log("Running ->", what2Scan);
 
+
 if (what2Scan == "keep2share.cc") {
     console.log("keep2share.cc");
-    getKeep2shareSText(inputPic, function (content) {
+    getKeep2shareNewSText(inputPic, function (content) {
         fs.writeFile('result.txt', content["text"], (err) => {
             if (err) throw err;
 
@@ -36,6 +43,126 @@ if (what2Scan == "keep2share.cc") {
     })
 } else {
     console.log("No function found for: ", what2Scan);
+}
+
+//Solving keep2share.cc new captchas
+function getKeep2shareNewSText(file, callback) {
+
+    Jimp.read(file).then(image => {
+        image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
+            var gs = new Array(image.bitmap.width * image.bitmap.height);
+            var gs_index = 0;
+            image = image.blur(1)
+            image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+
+                var color = image.getPixelColor(x, y);
+                var rgbColor = Jimp.intToRGBA(color);
+                // if (isColorVisableWellOnWhite2(rgbColor)) {
+                //     image.setPixelColor(black, x, y);
+                // } else {
+                //     image.setPixelColor(white, x, y);
+                // }
+                var gray = parseInt(rgbColor["r"] * 0.3 + rgbColor["g"] * 0.6 + rgbColor["b"] * 0.11);
+                gs[gs_index++] = gray;
+
+                if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
+
+
+                    var corners1 = tracking.Fast.findCorners(gs, image.bitmap.width, image.bitmap.height);
+                    var descriptors1 = tracking.Brief.getDescriptors(gs, image.bitmap.width, corners1);
+
+                    var res = {};
+                    for (var ch in desc) {
+                        var descriptors2 = new Int32Array(desc[ch]["desc"]);
+                        var corners2 = desc[ch]["corn"];
+
+                        var matches1 = tracking.Brief.match(corners1, descriptors1, corners2, descriptors2);
+
+                        var matches = [];
+                        for (var i = 0; i < matches1.length; i++) {
+                            var d = matches1[i]["keypoint1"][1]-matches1[i]["keypoint2"][1];
+                            //if(Math.abs(d)<30) {
+                                matches.push(matches1[i])
+                            //}
+                        }
+                        var vmatches = 0;
+                        for (var i = 0; i < matches.length; i++) {
+                            var avDis = 0;
+                            for (var k = 0; k < matches.length; k++) {
+                                var a = matches[i]["keypoint1"][0] - matches[k]["keypoint1"][0];
+                                var b = matches[i]["keypoint1"][1] - matches[k]["keypoint1"][1];
+
+                                var c = Math.sqrt(a * a + b * b);
+                                avDis+=c;
+
+                                
+                            }
+                            if(avDis/matches.length<50) {
+                                vmatches++;
+                            }
+                        }
+                        //tf = tf + matches.length*10;
+
+                        res[ch] = { "cnt": matches.length, "vmatches": vmatches, "mm" : matches.length };
+
+                        if (ch == "G") {
+                            for (var i = 0; i < matches.length; i++) {
+                                image.setPixelColor(red, matches[i]["keypoint1"][0], matches[i]["keypoint1"][1]);
+                            }
+                            console.log(matches);
+                        }
+                    }
+                    console.log(res)
+
+                    image.write('temp.jpg', function () {
+
+                    });
+                    // image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
+                    //     (async () => {
+                    //         await worker.load();
+                    //         await worker.loadLanguage('eng');
+                    //         await worker.initialize('eng');
+                    //         await worker.setParameters({
+                    //             tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                    //             tessedit_pageseg_mode: PSM.PSM_SINGLE_LINE,        
+                    //         });
+                    //         const { data: { text } } = await worker.recognize(data);
+                    //         console.log(text);
+                    //         await worker.terminate();
+                    //     })();
+
+                    //     // Tesseract.recognize(data, {
+                    //     //     tessedit_char_blacklist: '!?',
+                    //     //     tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+                    //     // }).then(function (result) {
+                    //     //     var text = result["text"].replace(/\W/g, '');
+                    //     //     var confidence = result["confidence"];
+                    //     //     var ret = { host: what2Scan, text: text, confidence: confidence };
+                    //     //     console.log(ret)
+                    //     //     callback(ret);
+                    //     // })
+                    // })
+                }
+            });
+        })
+    }).catch(err => {
+        console.log(err);
+        // Handle an exception.
+    });
+}
+
+function isColorVisableWellOnWhite2(rgbColor) {
+    if (contrast(Jimp.intToRGBA(white), rgbColor) < 1.25 && rgbColor["r"] > 100 && rgbColor["g"] > 100 && rgbColor["b"] > 100) {
+        return false;
+    }
+    return true;
+}
+
+function isColorVisableWellOnWhite3(rgbColor) {
+    if (contrast(Jimp.intToRGBA(white), rgbColor) < 3 && rgbColor["r"] > 100 && rgbColor["g"] > 100 && rgbColor["b"] > 100) {
+        return false;
+    }
+    return true;
 }
 
 //Solving dfiles.eu captchas
@@ -75,34 +202,87 @@ function getDfilesText(file, callback) {
     });
 }
 
-//Get the angle in witch the img is more "straight"
-//Give it a copy of you Img!
-function getAngleToStraightTheImage(image, maxYPixel, round, OrgHeight, angle, callback) {
-    for (var y = 0; y < image.bitmap.height; y++) {
-        for (var x = 0; x < image.bitmap.width; x++) {
-            var color = image.getPixelColor(x, y)
-            var rgbColor = Jimp.intToRGBA(color);
-            if (color != white && color != black && color != 0 && color != 4294967045) { //Color pixel found
-                if (maxYPixel <= y && round == 1) {
-                    //console.log("t",maxYPixel,y, color);
-                    image.rotate(1).resize(Jimp.AUTO, OrgHeight);
-                    angle++;
-                    getAngleToStraightTheImage(image, y, round, OrgHeight, angle, callback);
-
-                } else if (maxYPixel < y) {
-                    round = 2;
-                    //console.log("b",maxYPixel,y, color);
-                    image.rotate(-1).resize(Jimp.AUTO, OrgHeight);
-                    angle--;
-                    getAngleToStraightTheImage(image, y, round, OrgHeight, angle, callback)
-                } else {
-                    callback(angle + 1);
-                }
-                return;
+//Solving keep2share.cc captchas This is the old type!
+function getKeep2shareSText(file, callback) {
+    var colorBuffer = {};
+    var bandColors = {};
+    var borderColorsTop = {};
+    var borderColorsBot = {};
+    Jimp.read(file).then(image => {
+        image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+            var index = image.getPixelColor(x, y);
+            if (!colorBuffer[index]) {
+                colorBuffer[index] = 1;
+            } else {
+                colorBuffer[index]++;
             }
-        }
-    }
+
+            if (index != white && y < 10) { //Collect all colors represented in the top 10 pixels of the image
+                borderColorsTop[index] = true;
+            }
+
+            if (index != white && image.bitmap.height - y < 10) { //Collect all colors represented in the bottom 10 pixels of the image
+                borderColorsBot[index] = true;
+            }
+
+            if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
+
+                for (var k in borderColorsTop) { //Ban all colors that are represented in the top AND bottom 10 pixels of the image (So if the text is moved to the top we do not ban the text color!)
+                    if (borderColorsBot[k]) {
+                        bandColors[k] = true;
+                    }
+                }
+
+                for (var i in colorBuffer) {
+                    if (colorBuffer[i] < 100) { //Remove all colors witch are not very present in the img (less then 100 pixels of this color)
+                        bandColors[i] = true;
+                    }
+                }
+
+                image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+                    var color = image.getPixelColor(x, y);
+                    var rgbColor = Jimp.intToRGBA(color);
+                    if (!isColorVisableWellOnWhite(rgbColor)) { //remove colors that are barley seen
+                        image.setPixelColor(white, x, y);
+                    } else {
+                        for (var k in bandColors) {
+                            if (color == k) {
+                                image.setPixelColor(white, x, y);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
+                        fillGaps(image, 3, function (image) {
+                            thinOut(image, 2, function (image) {
+                                changeAllPresentPixelsToBlack(image, function (image) {
+                                    image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
+                                        Tesseract.recognize(data, {
+                                            tessedit_char_blacklist: '!?',
+                                            tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+                                        }).then(function (result) {
+                                            var text = result["text"].replace(/\W/g, '');
+                                            var confidence = result["confidence"];
+                                            callback({ host: what2Scan, text: text, confidence: confidence });
+                                        })
+                                    })
+                                    // image.write('temp.jpg', function () { //Write result back as image
+                                    // });
+                                });
+                            });
+                        })
+                    }
+                });
+            }
+        });
+    }).catch(err => {
+        console.log(err);
+        // Handle an exception.
+    });
 }
+
+
 
 //Solving przeklej.org captchas
 function getPrzeklejText(file, callback) {
@@ -165,86 +345,6 @@ function getPrzeklejText(file, callback) {
                             //Save img without white noise just for fun
                         });
                     })
-                });
-            }
-        });
-    }).catch(err => {
-        console.log(err);
-        // Handle an exception.
-    });
-}
-
-//Solving keep2share.cc captchas
-function getKeep2shareSText(file, callback) {
-    var colorBuffer = {};
-    var bandColors = {};
-    var borderColorsTop = {};
-    var borderColorsBot = {};
-    Jimp.read(file).then(image => {
-        image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
-            var index = image.getPixelColor(x, y);
-            if (!colorBuffer[index]) {
-                colorBuffer[index] = 1;
-            } else {
-                colorBuffer[index]++;
-            }
-
-            if (index != white && y < 10) { //Collect all colors represented in the top 10 pixels of the image
-                borderColorsTop[index] = true;
-            }
-
-            if (index != white && image.bitmap.height - y < 10) { //Collect all colors represented in the bottom 10 pixels of the image
-                borderColorsBot[index] = true;
-            }
-
-            if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
-
-                for (var k in borderColorsTop) { //Ban all colors that are represented in the top AND bottom 10 pixels of the image (So if the text is moved to the top we do not ban the text color!)
-                    if (borderColorsBot[k]) {
-                        bandColors[k] = true;
-                    }
-                }
-
-                for (var i in colorBuffer) {
-                    if (colorBuffer[i] < 100) { //Remove all colors witch are not very present in the img (less then 100 pixels of this color)
-                        bandColors[i] = true;
-                    }
-                }
-
-                image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
-                    var color = image.getPixelColor(x, y);
-                    var rgbColor = Jimp.intToRGBA(color);
-                    if (!isColorVisableWellOnWhite(rgbColor)) { //remove colors that are barley seen
-                        image.setPixelColor(white, x, y);
-                    } else {
-                        for (var k in bandColors) {
-                            if (color == k) {
-                                image.setPixelColor(white, x, y);
-                                break;
-                            }
-                        }
-                    }
-
-                    if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
-                        fillGaps(image, 3, function (image) {
-                            thinOut(image, 2, function (image) {
-                                changeAllPresentPixelsToBlack(image, function (image) {
-                                    image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
-                                        Tesseract.recognize(data, {
-                                            tessedit_char_blacklist: '0123456789!?',
-                                            tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-                                        }).then(function (result) {
-                                            var text = result["text"].replace(/\W/g, '');
-                                            var confidence = result["confidence"];
-                                            callback({ host: what2Scan, text: text, confidence: confidence });
-                                        })
-                                    })
-                                    // image.write('temp.jpg', function () { //Write result back as image
-                                    // });
-                                });
-                            });
-                        })
-                    }
                 });
             }
         });
@@ -466,6 +566,35 @@ function fillHoles(image, iterations, callback) {
             }
         })
     });
+}
+
+//Get the angle in witch the img is more "straight"
+//Give it a copy of you Img!
+function getAngleToStraightTheImage(image, maxYPixel, round, OrgHeight, angle, callback) {
+    for (var y = 0; y < image.bitmap.height; y++) {
+        for (var x = 0; x < image.bitmap.width; x++) {
+            var color = image.getPixelColor(x, y)
+            var rgbColor = Jimp.intToRGBA(color);
+            if (color != white && color != black && color != 0 && color != 4294967045) { //Color pixel found
+                if (maxYPixel <= y && round == 1) {
+                    //console.log("t",maxYPixel,y, color);
+                    image.rotate(1).resize(Jimp.AUTO, OrgHeight);
+                    angle++;
+                    getAngleToStraightTheImage(image, y, round, OrgHeight, angle, callback);
+
+                } else if (maxYPixel < y) {
+                    round = 2;
+                    //console.log("b",maxYPixel,y, color);
+                    image.rotate(-1).resize(Jimp.AUTO, OrgHeight);
+                    angle--;
+                    getAngleToStraightTheImage(image, y, round, OrgHeight, angle, callback)
+                } else {
+                    callback(angle + 1);
+                }
+                return;
+            }
+        }
+    }
 }
 
 //Remove every pixel with a white pixel neighbor
