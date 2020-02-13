@@ -30,7 +30,7 @@ Known Hosts with this captcha:
 * keep2share.cc
 * fileboom.me
 
-Docu on how I solve this Captcha coming soon!
+Docu on how I solve this Captcha typ: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
 ## Old (not used anymore) captchas
 ### 6 Digits Captcha
@@ -38,7 +38,7 @@ Old Captcha from K2S. Download V1.x to get the code!
 
 ![ks](/docs/ksinput.gif)
 
-Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
+Docu on how I solve this Captcha typ: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
 
 ### 4 Digits Captcha
 ![ks](/docs/xFQIX.png)
@@ -46,7 +46,7 @@ Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkt
 Known Hosts with this captcha:
 * przeklej.org
 
-Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
+Docu on how I solved this Captcha typ: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
 
 ---------------------
 
