@@ -8,7 +8,7 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2 and start downloading
 
-## Installation Linus & Mac
+## Installation Linux & Mac
 * Not supported at the moment!
 
 ## Deactivate The Captcha Solver for Hosts
