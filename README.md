@@ -32,7 +32,7 @@ Known Hosts with this captcha:
 
 Docu on how I solve this Captcha coming soon!
 
-## Old (unsupported) captchas
+## Old (not used anymore) captchas
 ### 6 Digits Captcha
 Old Captcha from K2S. Download V1.x to get the code!
 
