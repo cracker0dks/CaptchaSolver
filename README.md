@@ -9,7 +9,7 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 3. restart JD2 and start downloading
 
 ## Installation Linux & Mac
-* Not supported at the moment!
+* Not supported at the moment! [more infos](https://github.com/cracker0dks/CaptchaSolver/issues/4)
 
 ## Deactivate The Captcha Solver for Hosts
 This come in handy if the host changed the captcha type and you have to deactivate some hosts...
@@ -50,5 +50,5 @@ Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalk
 
 ---------------------
 
-Thanks to [budel](https://github.com/budel) for the linux part!
+Thanks to [budel](https://github.com/budel) for the linux part on v1.x!
 
