@@ -33,9 +33,9 @@ Known Hosts with this captcha:
 Docu on how I solve this Captcha typ: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
 ## Old (not used anymore) captchas
-### 6 Digits Captcha
-Old Captcha from K2S. Download V1.x to get the code!
+Download v1.x to get the code for solving this captchas!
 
+### 6 Digits Captcha
 ![ks](/docs/ksinput.gif)
 
 Docu on how I solve this Captcha typ: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
