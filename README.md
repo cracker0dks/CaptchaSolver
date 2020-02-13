@@ -33,8 +33,9 @@ Known Hosts with this captcha:
 Docu on how I solve this Captcha coming soon!
 
 ## Old (unsupported) captchas
-### 6 Digits Captcha (OLD)
+### 6 Digits Captcha
 Old Captcha from K2S. Download V1.x to get the code!
+
 ![ks](/docs/ksinput.gif)
 
 Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
