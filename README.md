@@ -1,7 +1,7 @@
 # JDownloader 2 Offline Captcha solver
 JDownloader already solves a lot of captchas on its own, but for some hosts you have to input the result by hand. This tool reduces the list of unsupported hosts.
 
-Using NodeJs with [JIMP](https://github.com/oliver-moran/jimp) for image processing and [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to solve the captchas!
+Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to solve captchas!
 
 ## Installation Windows
 1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.0.0/CaptchaSolver-v2.0.0_standalone_win.zip)
