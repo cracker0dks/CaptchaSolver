@@ -1,5 +1,6 @@
 ## WARNING: keep2share and fileboom changed their captchas to an other type... so this is not working until its fixed! Take a look here: https://github.com/cracker0dks/CaptchaSolver/issues/4
 
+Also take a look at "Deactivate The Captcha Solver for Hosts" (down) to deactivate the hosts for now!
 ---------------------------
 
 # JDownloader 2 Offline Captcha solver
@@ -11,6 +12,15 @@ Using NodeJs with [JIMP](https://github.com/oliver-moran/jimp) for image process
 1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/untagged-7d1f90fd4b27d2602ed5/CaptchaSolver-1.4.3_standalone_win.zip) OR [linux & mac](https://github.com/cracker0dks/CaptchaSolver/releases/download/v1.4.3_Standalone/CaptchaSolver-1.4.3_standalone_linux.zip.zip)
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2 and start downloading
+
+## Deactivate The Captcha Solver for Hosts
+This come in handy if the host changed the captcha type and you have to deactivate some hosts...
+
+1. Go to ...\JDownloader v2.0\jd\captcha\methods\ 
+2. Move the folders of the hosts you want to deactivate "keep2share_linux", "keep2share_win", "przeklej_linux" or "przeklej_win" to another save location
+3. Restart JDownloader 2
+
+To activate them again, just copy them back in and restart JD2
 
 ## Supported Types of Captchas
 This Tool automatically solves Captchas for you! 
