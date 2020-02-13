@@ -47,8 +47,9 @@ Not matching to the right features... And if you look at it like this, it is ver
 I thought about to connect the features to clusters but a the time I wrote an algorithm and "learn" these clusters I would also be able to try a "next level approche".
 
 ## Next Level and my solution: Train a Neuronal Network
-At first I tried to train the net with the generated images from before, but maybe I not got the correct bounding boxes or this is just to little information for a proper training... it was poor. 
-For neuronal networks its best to train them on real data anyway. So I wrote a captcha generator witch also generates the description of the boundings for each letter in each captcha. The captchas look like this (the bounding boxes here are only the debug few and not used on the training)
+At first I tried to train the net with the generated images from before, but maybe I got incorrect bounding boxes or this is just to little information for a proper training... it was poor. 
+
+For neuronal networks its best practice to train them on real data anyway. So I wrote a captcha generator witch also generates the description of the boundings for each letter in each captcha. The captchas look like this (the bounding boxes here are only the debug few and not used in training)
 
 ![exp](/docs/674340947845.jpg)
 
