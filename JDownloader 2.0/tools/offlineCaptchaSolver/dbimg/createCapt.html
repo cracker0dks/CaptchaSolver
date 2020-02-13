@@ -1,0 +1,129 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'Comismsh';
+            src: url('./Comismsh.ttf');
+        }
+    </style>
+</head>
+
+<body>
+    <span style="font-family: Comismsh;"> </span>
+    <div id="content">
+
+    </div>
+
+    <script>
+        var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        $(document).ready(function () {
+            setTimeout(function () {
+                for (var k = 0; k < 12; k++) {
+                    var vaildCap = true;
+                    var imgWidth = 260;
+                    var imgHeight = 260;
+                    var cEl = $('<canvas width="260" height="100"></canvas>');
+                    $("#content").append(cEl);
+                    var canvas = cEl[0];
+                    var context = canvas.getContext("2d");
+                    context.filter = 'blur(1px)';
+                    context.fillStyle = "rgba(255, 255, 255, 1)";
+                    context.fillRect(0, 0, 261, 101);
+                    context.fillStyle = "rgba(0, 0, 0, 1)";
+                    context.font = "80pt Comismsh";
+                    var desc = "";
+                    var lshift = -8 + Math.floor(Math.random() * 19);
+                    for (var i = 0; i < 6; i++) {
+                        var cr = Math.floor(Math.random() * 63);
+                        var c = chars[cr];
+                        var cwidth = context.measureText(c).width;
+                        var cheight = context.measureText(c).actualBoundingBoxAscent + context.measureText(c).actualBoundingBoxDescent;
+
+
+                        if (lshift + cwidth > 275) {
+                            vaildCap = false;
+                        }
+                        desc = desc == "" ? desc : desc + "\n";
+
+                        var minX = lshift - 3;
+                        var maxX = lshift + cwidth + 3;
+
+                        var minY = 72;
+                        var maxY = 72 + cheight;
+
+                        var midX = (minX + maxX) / 2;
+                        var midXRel = getRounding(midX / imgWidth);
+
+                        var midY = (minY + maxY) / 2;
+                        var midYRel = getRounding(midY / imgHeight);
+
+                        var width = getRounding((maxX - minX) / imgWidth);
+                        var height = getRounding((maxY - minY) / imgHeight);
+
+                        desc += cr + ' ' + midXRel + ' ' + midYRel + ' ' + width + ' ' + height;
+
+                        context.fillText(c, lshift, 75);
+                        lshift += cwidth - Math.floor(Math.random() * (cwidth / 3.3));
+                    }
+                    console.log(desc);
+                    
+
+                    context.fillStyle = "rgba(0, 0, 0, 1)";
+                    context.beginPath();
+                    var bx = Math.floor(Math.random() * 30) + 10;
+                    var by = Math.floor(Math.random() * 70) + 20;
+                    var bx1 = Math.floor(Math.random() * 30) + 70;
+                    var by1 = Math.floor(Math.random() * 95) + 5;
+                    var bx2 = Math.floor(Math.random() * 30) + 150;
+                    var by2 = Math.floor(Math.random() * 95) + 5;
+                    var bx3 = Math.floor(Math.random() * 30) + 230;
+                    var by3 = Math.floor(Math.random() * 95) + 5;
+                    context.moveTo(bx, by);
+                    context.bezierCurveTo(bx1, by1, bx2, by2, bx3, by3);
+                    context.stroke();
+                    if (!vaildCap) {
+                        cEl.remove();
+                    } else {
+                        var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+                        var name = Math.floor((+new Date()) * Math.random());
+                        downloadImage(dataURL, name + '.jpg');
+                        download(name+'.txt', desc)
+                    }
+                }
+
+
+
+            }, 500)
+
+        })
+
+        // Save | Download image
+        function downloadImage(data, filename = 'untitled.jpeg') {
+            var a = document.createElement('a');
+            a.href = data;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+        }
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+        function getRounding(nr) {
+            return Math.round(nr * 1000000) / 1000000;
+        }
+    </script>
+</body>
+
+</html>
