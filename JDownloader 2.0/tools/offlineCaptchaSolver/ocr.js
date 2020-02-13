@@ -3,9 +3,9 @@ require('./trackingjs_fast');
 require('./trackingjs_brief');
 require('./trackingjs_img');
 
-require('./dbimg/modDesc.js');
 var Jimp = require('jimp'); //For image processing
 var fs = require('fs');
+const { execSync } = require('child_process');
 
 var what2Scan = process.argv[2] || "keep2share.cc"; //Start parameter
 var white = Jimp.rgbaToInt(255, 255, 255, 255);
@@ -49,102 +49,44 @@ if (what2Scan == "keep2share.cc") {
 function getKeep2shareNewSText(file, callback) {
 
     Jimp.read(file).then(image => {
-        image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
-            var gs = new Array(image.bitmap.width * image.bitmap.height);
-            var gs_index = 0;
-            image = image.blur(1)
-            image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
 
-                var color = image.getPixelColor(x, y);
-                var rgbColor = Jimp.intToRGBA(color);
-                // if (isColorVisableWellOnWhite2(rgbColor)) {
-                //     image.setPixelColor(black, x, y);
-                // } else {
-                //     image.setPixelColor(white, x, y);
-                // }
-                var gray = parseInt(rgbColor["r"] * 0.3 + rgbColor["g"] * 0.6 + rgbColor["b"] * 0.11);
-                gs[gs_index++] = gray;
-
-                if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) { //Scan1 finished
-
-
-                    var corners1 = tracking.Fast.findCorners(gs, image.bitmap.width, image.bitmap.height);
-                    var descriptors1 = tracking.Brief.getDescriptors(gs, image.bitmap.width, corners1);
-
-                    var res = {};
-                    for (var ch in desc) {
-                        var descriptors2 = new Int32Array(desc[ch]["desc"]);
-                        var corners2 = desc[ch]["corn"];
-
-                        var matches1 = tracking.Brief.match(corners1, descriptors1, corners2, descriptors2);
-
-                        var matches = [];
-                        for (var i = 0; i < matches1.length; i++) {
-                            var d = matches1[i]["keypoint1"][1]-matches1[i]["keypoint2"][1];
-                            //if(Math.abs(d)<30) {
-                                matches.push(matches1[i])
-                            //}
-                        }
-                        var vmatches = 0;
-                        for (var i = 0; i < matches.length; i++) {
-                            var avDis = 0;
-                            for (var k = 0; k < matches.length; k++) {
-                                var a = matches[i]["keypoint1"][0] - matches[k]["keypoint1"][0];
-                                var b = matches[i]["keypoint1"][1] - matches[k]["keypoint1"][1];
-
-                                var c = Math.sqrt(a * a + b * b);
-                                avDis+=c;
-
-                                
-                            }
-                            if(avDis/matches.length<50) {
-                                vmatches++;
-                            }
-                        }
-                        //tf = tf + matches.length*10;
-
-                        res[ch] = { "cnt": matches.length, "vmatches": vmatches, "mm" : matches.length };
-
-                        if (ch == "G") {
-                            for (var i = 0; i < matches.length; i++) {
-                                image.setPixelColor(red, matches[i]["keypoint1"][0], matches[i]["keypoint1"][1]);
-                            }
-                            console.log(matches);
+        image.write('./darknet64/temp.jpg', function () {
+            let output = execSync('cd darknet64 && darknet_no_gpu.exe detector test data/obj.data yolov3tinyobj.cfg yolov3tinyobjLast.weights -dont_show temp.jpg > result.txt');
+            fs.readFile('./darknet64/result.txt', 'utf8', function read(err, data) {
+                if (err) {
+                    throw err;
+                }
+                var lines = data.split("\r\n");
+                var valdResA = [];
+                for(var i=0;i<lines.length;i++) {
+                    var line = lines[i];
+                    if(line.indexOf(":")!==-1 && line.indexOf("%")!==-1) {
+                        valdResA.push({ c : line.split(":")[0], p : line.split(": ")[1].replace("%", "") })
+                    }
+                }
+                while(valdResA.length>6) { //Remove letters with lowest props
+                    var sma = 100;
+                    var index = 0;
+                    for(var i=0;i<valdResA.length;i++) {
+                        if(sma > valdResA[i]["p"]) {
+                            sma = valdResA[i]["p"];
+                            index = i;
                         }
                     }
-                    console.log(res)
-
-                    image.write('temp.jpg', function () {
-
-                    });
-                    // image.getBuffer(Jimp.MIME_JPEG, function (err, data) {
-                    //     (async () => {
-                    //         await worker.load();
-                    //         await worker.loadLanguage('eng');
-                    //         await worker.initialize('eng');
-                    //         await worker.setParameters({
-                    //             tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                    //             tessedit_pageseg_mode: PSM.PSM_SINGLE_LINE,        
-                    //         });
-                    //         const { data: { text } } = await worker.recognize(data);
-                    //         console.log(text);
-                    //         await worker.terminate();
-                    //     })();
-
-                    //     // Tesseract.recognize(data, {
-                    //     //     tessedit_char_blacklist: '!?',
-                    //     //     tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-                    //     // }).then(function (result) {
-                    //     //     var text = result["text"].replace(/\W/g, '');
-                    //     //     var confidence = result["confidence"];
-                    //     //     var ret = { host: what2Scan, text: text, confidence: confidence };
-                    //     //     console.log(ret)
-                    //     //     callback(ret);
-                    //     // })
-                    // })
+                    valdResA.splice(index,1);
                 }
+                var text = "";
+                var confidence = 0;
+                for(var i=0;i<valdResA.length;i++) {
+                    text+=valdResA[i]["c"];
+                    confidence+=parseFloat(valdResA[i]["p"]);
+                }
+                confidence=Math.round(confidence/6);
+                callback({ host: what2Scan, text: text, confidence: confidence });
             });
-        })
+            //console.log(output)
+        });
+
     }).catch(err => {
         console.log(err);
         // Handle an exception.

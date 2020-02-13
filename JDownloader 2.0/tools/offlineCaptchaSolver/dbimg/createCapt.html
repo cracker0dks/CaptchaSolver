@@ -21,11 +21,11 @@
         var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         $(document).ready(function () {
             setTimeout(function () {
-                for (var k = 0; k < 12; k++) {
+                for (var k = 0; k < 15; k++) {
                     var vaildCap = true;
                     var imgWidth = 260;
-                    var imgHeight = 260;
-                    var cEl = $('<canvas width="260" height="100"></canvas>');
+                    var imgHeight = 100;
+                    var cEl = $('<canvas width="' + imgWidth + '" height="' + imgHeight + '"></canvas>');
                     $("#content").append(cEl);
                     var canvas = cEl[0];
                     var context = canvas.getContext("2d");
@@ -39,37 +39,46 @@
                     for (var i = 0; i < 6; i++) {
                         var cr = Math.floor(Math.random() * 63);
                         var c = chars[cr];
+                        console.log(context.measureText(c))
                         var cwidth = context.measureText(c).width;
-                        var cheight = context.measureText(c).actualBoundingBoxAscent + context.measureText(c).actualBoundingBoxDescent;
-
+                        var cheight = context.measureText(c).actualBoundingBoxAscent + context.measureText(c).actualBoundingBoxDescent+4;
 
                         if (lshift + cwidth > 275) {
                             vaildCap = false;
                         }
                         desc = desc == "" ? desc : desc + "\n";
 
-                        var minX = lshift - 3;
-                        var maxX = lshift + cwidth + 3;
+                        var minX = lshift - 1;
 
-                        var minY = 72;
-                        var maxY = 72 + cheight;
+                        var minY = 73 - context.measureText(c).actualBoundingBoxAscent;
 
-                        var midX = (minX + maxX) / 2;
+                        var midX = minX + (cwidth+2)/2;
                         var midXRel = getRounding(midX / imgWidth);
 
-                        var midY = (minY + maxY) / 2;
+                        var midY = minY + ((cheight+2)/2);
                         var midYRel = getRounding(midY / imgHeight);
 
-                        var width = getRounding((maxX - minX) / imgWidth);
-                        var height = getRounding((maxY - minY) / imgHeight);
+                        var width = getRounding(cwidth / imgWidth);
+                        var height = getRounding(cheight / imgHeight);
 
                         desc += cr + ' ' + midXRel + ' ' + midYRel + ' ' + width + ' ' + height;
 
                         context.fillText(c, lshift, 75);
                         lshift += cwidth - Math.floor(Math.random() * (cwidth / 3.3));
+
+                        //Debug boundings
+                        // context.beginPath();
+                        // context.rect(minX, minY, cwidth, cheight);
+                        // context.stroke();
+
+                        // context.beginPath();
+                        // context.rect(midXRel*imgWidth, midYRel*imgHeight, 1, 1);
+                        // context.stroke();
+
+
                     }
                     console.log(desc);
-                    
+
 
                     context.fillStyle = "rgba(0, 0, 0, 1)";
                     context.beginPath();
@@ -90,7 +99,7 @@
                         var dataURL = canvas.toDataURL("image/jpeg", 1.0);
                         var name = Math.floor((+new Date()) * Math.random());
                         downloadImage(dataURL, name + '.jpg');
-                        download(name+'.txt', desc)
+                        download(name + '.txt', desc)
                     }
                 }
 
