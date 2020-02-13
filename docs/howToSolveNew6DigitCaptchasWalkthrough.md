@@ -14,7 +14,7 @@ The old type (they changed it recently) I solved [here](/docs/howToSolve6DigitCa
 So because they changed it, we need to solve it. Again!
 
 ## Abstract
-To solve this captcha type I generated 500 captchas of this type by myself and trained the neuronal net with them. According to tests the accuracy of the trained net is above 98%, witch is more than sufficient.
+To solve this captcha typ, I generated 500 captchas of this type by myself and trained the neuronal net with them. According to tests the accuracy of the trained net is above 98%, witch is more than sufficient.
 
 ## The long journey of trys and errors
 All captchas I solved so far, I just modified and fed them to [tesseract](https://github.com/naptha/tesseract.js?files=1), a neuronal ocr algorithm. So I did the same thing with this captcha... Long story short: Not working! Some problems with this approche:
