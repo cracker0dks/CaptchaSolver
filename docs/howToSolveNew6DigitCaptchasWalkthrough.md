@@ -1,6 +1,6 @@
 # How To Solve the new 6 Letter Captchas with a neuronal network #
 ## Tools used ##
-* NodeJs with [jimp](https://github.com/oliver-moran/jimp) (Only to copy images and writing result files)
+* NodeJs with [jimp](https://github.com/oliver-moran/jimp) (To copy images, generating Captchas and writing result files)
 * Neuronal Network -> [Darknet Yolo](https://pjreddie.com/darknet/yolo/)
 
 ## Problem description ##
