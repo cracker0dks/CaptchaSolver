@@ -1,11 +1,10 @@
 # How To Solve the new 6 Letter Captchas with a neuronal network #
 ## Tools used ##
-* NodeJs
+* NodeJs with [jimp](https://github.com/oliver-moran/jimp) (Only to copy images and writing result files)
 * Neuronal Network -> [Darknet Yolo](https://pjreddie.com/darknet/yolo/)
-* Image processing -> [jimp](https://github.com/oliver-moran/jimp)
 
 ## Problem description ##
-If you downloading from sites like keep2share or linksnappy in freemode, you probably know new captcha type:
+If you downloading from sites like keep2share or linksnappy in freemode, you probably know this captcha type:
 ![ks](/docs/220293750054.jpg)
 
 (Original Captcha Image)
@@ -15,6 +14,8 @@ So because they changed it, we need to solve it. Again!
 
 ## Abstract
 To solve this captcha typ, I generated 500 captchas of this type by myself and trained the neuronal net with them. According to tests the accuracy of the trained net is above 98%, witch is more than sufficient.
+
+Jump to [This Part](docs/howToSolveNew6DigitCaptchasWalkthrough.md#next-level-and-my-solution-train-a-neuronal-network) if you just want more infos about the solution and not the way...
 
 ## The long journey of trys and errors
 All captchas I solved so far, I just modified and fed them to [tesseract](https://github.com/naptha/tesseract.js?files=1), a neuronal ocr algorithm. So I did the same thing with this captcha... Long story short: Not working! Some problems with this approche:
@@ -42,14 +43,14 @@ But instead got:
 
 ![exp](/docs/exp2.gif)
 
-Not matching to the right features... And if you look at it like this, it is very obvious because the font is build out of the same parts, so different letters can have the same parts -> also the same features.
+Not matching to the right features... And if you look at it, it is kind of obvious because the font characters are build out of the same "parts", so different letters will have the same features.
 
-I thought about to connect the features to clusters but a the time I wrote an algorithm and "learn" these clusters I would also be able to try a "next level approche".
+I thought about to connect features from each letter to clusters, but a the time I wrote an algorithm and "learn" these clusters I would also be able to try a "next level approche".
 
 ## Next Level and my solution: Train a Neuronal Network
 At first I tried to train the net with the generated images from before, but maybe I got incorrect bounding boxes or this is just to little information for a proper training... it was poor. 
 
-For neuronal networks its best practice to train them on real data anyway. So I wrote a captcha generator witch also generates the description of the boundings for each letter in each captcha. The captchas look like this (the bounding boxes here are only the debug few and not used in training)
+For neuronal networks its best practice to train them on real data anyway. So I wrote a captcha generator which also generates the description of the boundings for each letter in each captcha. The captchas look like this (the bounding boxes here are only the debug view and not used in training)
 
 ![exp](/docs/674340947845.jpg)
 
@@ -63,6 +64,8 @@ The file description for the net from the captchas above:
 25 0.765291 0.5 0.165933 0.62
 ```
 <ClassName> <x_center> <y_center> <width> <height>
+  
+This 
   
 This way I generated 500 Training and 100 Test captchas with description files and trained the net with help of this how to: [HOWTO](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects).
 
