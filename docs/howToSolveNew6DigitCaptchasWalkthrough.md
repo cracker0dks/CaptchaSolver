@@ -63,10 +63,8 @@ The file description for the net from the captchas above:
 13 0.608178 0.5 0.217525 0.62
 25 0.765291 0.5 0.165933 0.62
 ```
-<ClassName> <x_center> <y_center> <width> <height>
-  
-This 
-  
+`<ClassName> <x_center> <y_center> <width> <height>`
+   
 This way I generated 500 Training and 100 Test captchas with description files and trained the net with help of this how to: [HOWTO](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects).
 
 ![exp](/docs/chart.png)
