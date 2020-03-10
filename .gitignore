@@ -26,9 +26,4 @@ build/Release
 
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
-node_modules
-
-/JDownloader 2.0/tools/Windows/kscaptcha/*.traineddata
-/JDownloader 2.0/tools/Windows/kscaptcha/log.txt
-/JDownloader 2.0/tools/Windows/kscaptcha/result.txt
-/JDownloader 2.0/tools/Windows/kscaptcha/temp.jpg
+/JDownloader 2.0/tools/offlineCaptchaSolver/node_modules/
