@@ -27,3 +27,4 @@ build/Release
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 /JDownloader 2.0/tools/offlineCaptchaSolver/node_modules/
+/JDownloader 2.0/tools/offlineCaptchaSolver/darknet64/result.txt

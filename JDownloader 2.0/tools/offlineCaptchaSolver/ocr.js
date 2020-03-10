@@ -1,8 +1,3 @@
-tracking = {};
-require('./trackingjs_fast');
-require('./trackingjs_brief');
-require('./trackingjs_img');
-
 var Jimp = require('jimp'); //For image processing
 var fs = require('fs');
 const { execSync } = require('child_process');

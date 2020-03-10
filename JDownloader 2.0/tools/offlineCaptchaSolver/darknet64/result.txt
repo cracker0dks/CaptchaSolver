@@ -2,7 +2,7 @@
  seen 64 
  Used FMA & AVX2 
  Used AVX 
-temp.jpg: Predicted in 107.299000 milli-seconds.
+temp.jpg: Predicted in 264.654000 milli-seconds.
 e: 99%
 h: 74%
 C: 100%
