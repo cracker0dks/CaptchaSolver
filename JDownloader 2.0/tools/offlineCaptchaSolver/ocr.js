@@ -41,8 +41,8 @@ function getKeep2share(file, callback) {
                 }
             }
             while (valdResA.length > 6) { //Remove letters with lowest props
-                var sma = 100;
-                var index = 0;
+                var sma = 100; //Smallest confidence
+                var index = 0; //Index of char with smallest confidence
                 for (var i = 0; i < valdResA.length; i++) {
                     if (sma > valdResA[i]["p"]) {
                         sma = valdResA[i]["p"];
