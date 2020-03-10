@@ -46,40 +46,37 @@ function getKeep2shareNewSText(file, callback) {
     Jimp.read(file).then(image => {
 
         image.write('./darknet64/temp.jpg', function () {
-            let output = execSync('cd darknet64 && darknet_no_gpu.exe detector test data/obj.data yolov3tinyobj.cfg yolov3tinyobjLast.weights -dont_show temp.jpg > result.txt');
-            fs.readFile('./darknet64/result.txt', 'utf8', function read(err, data) {
-                if (err) {
-                    throw err;
+            let result = execSync('cd darknet64 && darknet_no_gpu.exe detector test data/obj.data yolov3tinyobj.cfg yolov3tinyobjLast.weights -dont_show temp.jpg');
+            let resultString = result.toString('utf8');
+            //console.log(resultString);
+
+            var lines = resultString.split("\r\n");
+            var valdResA = [];
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                if (line.indexOf(":") !== -1 && line.indexOf("%") !== -1) {
+                    valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") })
                 }
-                var lines = data.split("\r\n");
-                var valdResA = [];
-                for(var i=0;i<lines.length;i++) {
-                    var line = lines[i];
-                    if(line.indexOf(":")!==-1 && line.indexOf("%")!==-1) {
-                        valdResA.push({ c : line.split(":")[0], p : line.split(": ")[1].replace("%", "") })
+            }
+            while (valdResA.length > 6) { //Remove letters with lowest props
+                var sma = 100;
+                var index = 0;
+                for (var i = 0; i < valdResA.length; i++) {
+                    if (sma > valdResA[i]["p"]) {
+                        sma = valdResA[i]["p"];
+                        index = i;
                     }
                 }
-                while(valdResA.length>6) { //Remove letters with lowest props
-                    var sma = 100;
-                    var index = 0;
-                    for(var i=0;i<valdResA.length;i++) {
-                        if(sma > valdResA[i]["p"]) {
-                            sma = valdResA[i]["p"];
-                            index = i;
-                        }
-                    }
-                    valdResA.splice(index,1);
-                }
-                var text = "";
-                var confidence = 0;
-                for(var i=0;i<valdResA.length;i++) {
-                    text+=valdResA[i]["c"];
-                    confidence+=parseFloat(valdResA[i]["p"]);
-                }
-                confidence=Math.round(confidence/6);
-                callback({ host: what2Scan, text: text, confidence: confidence });
-            });
-            //console.log(output)
+                valdResA.splice(index, 1);
+            }
+            var text = "";
+            var confidence = 0;
+            for (var i = 0; i < valdResA.length; i++) {
+                text += valdResA[i]["c"];
+                confidence += parseFloat(valdResA[i]["p"]);
+            }
+            confidence = Math.round(confidence / 6);
+            callback({ host: what2Scan, text: text, confidence: confidence });
         });
 
     }).catch(err => {
