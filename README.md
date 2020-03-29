@@ -9,7 +9,12 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 3. restart JD2 and start downloading
 
 ## Installation Linux & Mac
-* Not supported at the moment! [more infos](https://github.com/cracker0dks/CaptchaSolver/issues/4)
+1. Clone this repository
+2. Download and compile [AlexeyAB's fork of darknet](https://github.com/AlexeyAB/darknet)
+3. Copy the resulting darknet executable to `/JDownloader 2.0/tools/offlineCaptchaSolver/darknet64/darknet`
+4. Install NodeJS and make sure it's available in your PATH
+5. Copy the "JDownloader 2.0" content into your current JD2 folder (probably `~/.jd`)
+6. Restart JD2 and start downloading
 
 ## Deactivate The Captcha Solver for Hosts
 This come in handy if the host changed the captcha type and you have to deactivate some hosts...

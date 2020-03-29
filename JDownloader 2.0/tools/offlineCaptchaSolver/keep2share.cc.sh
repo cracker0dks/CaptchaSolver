@@ -1,3 +1,3 @@
 #!/bin/bash
 ./checkdeps.sh
-./node ocr.js keep2share.cc
+node ocr.js keep2share.cc
