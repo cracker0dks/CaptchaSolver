@@ -55,5 +55,5 @@ Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalk
 
 ---------------------
 
-Thanks to [budel](https://github.com/budel) for the linux part on v1.x!
+Thanks to Corubba for the linux part on v2.x!
 
