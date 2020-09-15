@@ -1,4 +1,0 @@
-<jDownloader>
-  <method type="extern" os="windows" name="przeklej_win" services="przeklej.org;" />
-  <command cmd="tools\offlineCaptchaSolver\przeklej.org.bat" src="tools\offlineCaptchaSolver\input.gif" dst="tools\offlineCaptchaSolver\result.txt" />
-</jDownloader>
