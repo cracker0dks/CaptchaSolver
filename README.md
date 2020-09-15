@@ -34,6 +34,8 @@ This is a list of supported Captchas and the hosts, I know, are using them.
 Known Hosts with this captcha:
 * keep2share.cc
 * fileboom.me
+* tezfiles.com
+* depositfiles.com
 
 Docu on how I solve this Captcha type: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
