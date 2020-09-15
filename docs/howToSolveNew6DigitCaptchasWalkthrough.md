@@ -69,9 +69,9 @@ This way I generated 500 Training and 100 Test captchas with description files a
 
 ![exp](/docs/chart.png)
 
-This is the loss function on the training. On normal conditions you will need aboud 2000 Iterations for each class you want to train (in this case 62 Classes). But as you see, this is going mutch faster! If the loss is under 1 you can consider to stop training... this was given in about 1h and 7000 Iterations (Trained on 1 GPU GTX 1070).
+This is the loss function on the training. On normal conditions you will need aboud 2000 Iterations for each class you want to train (in this case 62 Classes). But as you see, this is going mutch faster! If the loss is under 1 you can consider to stop training... this was given in about 1h and 7000 Iterations (Trained on 1 GPU GTX-1070).
 
-Testing against a unseen captcha (on cpu):
+Testing against an unseen captcha (on cpu):
 
 ![exp](/docs/predictions.jpg)
 
