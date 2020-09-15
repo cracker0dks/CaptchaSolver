@@ -20,7 +20,7 @@ Jump to [This Part](https://github.com/cracker0dks/CaptchaSolver/blob/master/doc
 ## The long journey of trys and errors
 All captchas I solved so far, I just modified and fed them to [tesseract](https://github.com/naptha/tesseract.js?files=1), a neuronal ocr algorithm. So I did the same thing with this captcha... Long story short: Not working! Some problems with this approche:
 1. Picture is just black and white so no seperation on this behalf
-2. Not filled characters with shadow... the ocr not like them! We could fill them, but:
+2. Unfilled characters with shadow... the ocr not like them! We could fill them, but:
 3. The random line which has the same color so its hard to seperate and also hard to fill the rights spots
 
 ### An alternative way
