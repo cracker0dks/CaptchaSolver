@@ -15,12 +15,12 @@ So because they changed it, we need to solve it. Again!
 ## Abstract
 To solve this captcha typ, I generated 500 captchas of this type by myself and trained the neuronal net with them. According to tests the accuracy of the trained net is above 98%, witch is more than sufficient.
 
-Jump to [This Part](docs/howToSolveNew6DigitCaptchasWalkthrough.md#next-level-and-my-solution-train-a-neuronal-network) if you just want more infos about the solution and not the way...
+Jump to [This Part](https://github.com/cracker0dks/CaptchaSolver/blob/master/docs/howToSolveNew6DigitCaptchasWalkthrough.md#next-level-and-my-solution-train-a-neuronal-network) if you just want more infos about the solution and not the way...
 
 ## The long journey of trys and errors
 All captchas I solved so far, I just modified and fed them to [tesseract](https://github.com/naptha/tesseract.js?files=1), a neuronal ocr algorithm. So I did the same thing with this captcha... Long story short: Not working! Some problems with this approche:
 1. Picture is just black and white so no seperation on this behalf
-2. Not filled characters with shadow... the ocr not like them! We could fill them, but:
+2. Unfilled characters with shadow... the ocr not like them! We could fill them, but:
 3. The random line which has the same color so its hard to seperate and also hard to fill the rights spots
 
 ### An alternative way
@@ -69,9 +69,9 @@ This way I generated 500 Training and 100 Test captchas with description files a
 
 ![exp](/docs/chart.png)
 
-This is the loss function on the training. On normal conditions you will need aboud 2000 Iterations for each class you want to train (in this case 62 Classes). But as you see, this is going mutch faster! If the loss is under 1 you can consider to stop training... this was given in about 1h and 7000 Iterations (Trained on 1 GPU).
+This is the loss function on the training. On normal conditions you will need aboud 2000 Iterations for each class you want to train (in this case 62 Classes). But as you see, this is going mutch faster! If the loss is under 1 you can consider to stop training... this was given in about 1h and 7000 Iterations (Trained on 1 GPU GTX-1070).
 
-Testing against a unseen captcha (on cpu):
+Testing against an unseen captcha (on cpu):
 
 ![exp](/docs/predictions.jpg)
 
