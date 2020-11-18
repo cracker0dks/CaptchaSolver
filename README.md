@@ -4,7 +4,7 @@ JDownloader already solves a lot of captchas on its own, but for some hosts you 
 Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to solve captchas!
 
 ## Installation Windows
-1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.0.0/CaptchaSolver-v2.0.0_standalone_win.zip)
+1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.0.2/CaptchaSolver-v2.0.2_standalone_win.zip)
 2. Extract the "JDownloader 2.0" content in your current JD2 folder
 3. restart JD2 and start downloading
 
