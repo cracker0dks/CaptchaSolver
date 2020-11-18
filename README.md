@@ -32,7 +32,7 @@ This is a list of supported Captchas and the hosts, I know, are using them.
 ![ks](/docs/i1.jpg)
 
 Known Hosts with this captcha:
-* keep2share.cc
+* keep2share.cc / k2s.cc;
 * fileboom.me
 * tezfiles.com
 * depositfiles.com
