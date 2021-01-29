@@ -20,14 +20,12 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 This come in handy if the host changed the captcha type and you have to deactivate some hosts...
 
 1. Go to ...\JDownloader v2.0\jd\captcha\methods\ 
-2. Move the folders of the hosts you want to deactivate "keep2share_linux", "keep2share_win", "przeklej_linux" or "przeklej_win" to another save location
+2. Move the folders of the hosts you want to deactivate "keep2share_linux", "keep2share_win" to another save location
 3. Restart JDownloader 2
 
 To activate them again, just copy them back in and restart JD2
 
 ## Supported Types of Captchas
-This Tool automatically solves Captchas for you! 
-This is a list of supported Captchas and the hosts, I know, are using them.
 ### 6 Digits Captcha (NEW)
 ![ks](/docs/i1.jpg)
 
@@ -37,15 +35,15 @@ Known Hosts with this captcha:
 * tezfiles.com
 * depositfiles.com
 
-Docu on how I solve this Captcha type: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
+Docu on how this Captcha is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
-## Old (not used anymore) captchas
+## Old captchas (not used anymore)
 Download v1.x to get the code for solving this captchas!
 
 ### 6 Digits Captcha
 ![ks](/docs/ksinput.gif)
 
-Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
+Docu on how this Captcha is solvede: [HERE](docs/howToSolve6DigitCaptchasWalkthrough.md)
 
 ### 4 Digits Captcha
 ![ks](/docs/xFQIX.png)
@@ -53,7 +51,7 @@ Docu on how I solve this Captcha type: [HERE](docs/howToSolve6DigitCaptchasWalkt
 Known Hosts with this captcha:
 * przeklej.org
 
-Docu on how I solved this Captcha type: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
+DDocu on how this Captcha is solved: [HERE](docs/howToSolve4DigitCaptchasWalkthrough.md)
 
 ---------------------
 
