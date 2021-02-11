@@ -1,0 +1,4 @@
+<jDownloader>
+  <method type="extern" os="mac" name="kscaptcha_mac" services="k2s.cc;keep2share.cc;fileboom.me;depositfiles.com;tezfiles.com;" />
+  <command cmd="tools/offlineCaptchaSolver/keep2share.cc.sh" src="tools/offlineCaptchaSolver/input.gif" dst="tools/offlineCaptchaSolver/result.txt" />
+</jDownloader>
