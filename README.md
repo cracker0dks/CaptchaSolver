@@ -34,6 +34,7 @@ Known Hosts with this captcha:
 * fileboom.me
 * tezfiles.com
 * depositfiles.com
+* publish2.me
 
 Docu on how this Captcha is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
