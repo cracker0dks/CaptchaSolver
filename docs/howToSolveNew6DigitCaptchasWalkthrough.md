@@ -24,7 +24,7 @@ All captchas I solved so far, I just modified and fed them to [tesseract](https:
 3. The random line which has the same color so its hard to seperate and also hard to fill the rights spots
 
 ### An alternative way
-So my next try was to find features (Build on top of corner detection) in the captcha and compair them to the features of the plain letters. So I searched, and by pure luck, found the same font as is used in the captcha: [FONT](https://www.wfonts.com/font/comicbook-smash)... as I found out later also used by [base64Captcha](https://github.com/mojocn/base64Captcha), what is probably what they use to generate them.
+So my next try was to find features (Build on top of corner detection) in the captcha and compair them to the features of the plain letters. So I searched, and by pure luck, found the same font as is used in the captcha: [FONT](https://www.wfonts.com/font/comicbook-smash)... as I found out later is also used by [base64Captcha](https://github.com/mojocn/base64Captcha) and [svg-captcha](https://github.com/produck/svg-captcha).
 
 First I generated images of all chars that could be present in the captchas like this A:
 
