@@ -12,12 +12,12 @@ If you downloading from sites like keep2share or linksnappy in freemode, you pro
 The old type (they changed it recently) I solved [here](/docs/howToSolve6DigitCaptchasWalkthrough.md).
 So because they changed it, we need to solve it. Again!
 
-## Abstract
+## TLDR; AKA Abstract
 To solve this captcha typ, I generated 500 captchas of this type by myself and trained the neuronal net with them. According to tests the accuracy of the trained net is above 98%, witch is more than sufficient.
 
-Jump to [This Part](https://github.com/cracker0dks/CaptchaSolver/blob/master/docs/howToSolveNew6DigitCaptchasWalkthrough.md#next-level-and-my-solution-train-a-neuronal-network) if you just want more infos about the solution and not the way...
+Jump to [this Part](https://github.com/cracker0dks/CaptchaSolver/blob/master/docs/howToSolveNew6DigitCaptchasWalkthrough.md#next-level-and-my-solution-train-a-neuronal-network) if you just want more infos about the solution and not the way...
 
-## The long journey of trys and errors
+## The long journey of try and error
 All captchas I solved so far, I just modified and fed them to [tesseract](https://github.com/naptha/tesseract.js?files=1), a neuronal ocr algorithm. So I did the same thing with this captcha... Long story short: Not working! Some problems with this approche:
 1. Picture is just black and white so no seperation on this behalf
 2. Unfilled characters with shadow... the ocr not like them! We could fill them, but:
