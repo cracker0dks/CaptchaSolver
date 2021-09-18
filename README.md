@@ -16,6 +16,21 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 5. Copy the "JDownloader 2.0" content into your current JD2 folder (probably `~/.jd`)
 6. Restart JD2 and start downloading
 
+## Troubleshooting Windows
+If it does not work, got into the folder: `JDownloader 2.0\tools\offlineCaptchaSolver\darknet64` and open `test.bat`. You should see something like this if everthing is ok:
+```
+temp.jpg: Predicted in 74.892000 milli-seconds.
+e: 99%
+h: 74%
+C: 100%
+Y: 99%
+C: 100%
+1: 99% 
+```
+Or an error message.
+
+If you get "msvcr100.dll" is missing, you need to install `Microsoft Visual C++ 2010 Service Pack 1` from here: https://www.microsoft.com/en-US/download/details.aspx?id=26999
+
 ## Deactivate The Captcha Solver for Hosts
 This come in handy if the host changed the captcha type and you have to deactivate some hosts...
 
