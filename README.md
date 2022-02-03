@@ -28,7 +28,7 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 2. Download and compile [AlexeyAB's fork of darknet](https://github.com/AlexeyAB/darknet)
 3. Copy (and override) the resulting darknet executable to `/JDownloader 2.0/tools/offlineCaptchaSolver/darknet64/darknet`
 4. Install NodeJS and make sure it's available in your PATH
-5. Copy the "JDownloader 2.0" content into your current JD2 folder (probably `~/.jd`)
+5. Copy the "JDownloader 2.0" content into your current JD2 folder (probably `~/.jd` if you installed via flatpack try: /home/*username*/.var/app/org.jdownloader.JDownloader/data/jdownloader)
 6. Restart JD2 and start downloading
 
 ## Troubleshooting Windows
