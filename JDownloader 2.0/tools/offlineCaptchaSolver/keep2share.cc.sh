@@ -1,3 +1,5 @@
 #!/bin/bash
 ./checkdeps.sh
-node ocr.js keep2share.cc
+sleep 1
+./node ./ocr.js keep2share.cc &> log.txt
+sleep 1
