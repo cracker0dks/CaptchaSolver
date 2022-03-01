@@ -1,16 +1,14 @@
------------------------
-<b>Warning: They changed the Captcha to google Recaptcha V3 so this will not work anymore!</b>
------------------------
------------------------
------------------------
-
 # JDownloader 2 Offline Captcha solver
 JDownloader already solves a lot of captchas on its own, but for some hosts you have to input the result by hand. This tool reduces the list of unsupported hosts.
 
 Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to solve captchas!
 
 ## Supported Hosts:
-  None! They changed the captcha to google recaptcha v3 so this software will not work anymore!
+ * keep2share.cc / k2s.cc;
+* fileboom.me
+* tezfiles.com
+* depositfiles.com
+* publish2.me
 
 ## Installation Windows
 1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.0.2/CaptchaSolver-v2.0.2_standalone_win.zip)
