@@ -1,0 +1,88 @@
+# How To Solve Captchas With different geometrical shapes in NodeJs #
+
+## Tools used ##
+* NodeJs
+* Image processing -> [jimp](https://github.com/oliver-moran/jimp)
+* image-pixelizer -> [image-pixelizer](https://www.npmjs.com/package/image-pixelizer)
+
+## Problem description ##
+
+The captcha looks like this:
+
+![ks](/docs/filejoker.png)
+
+you need to put in the numbers of the shape you see in the upper left corner
+
+## Challanges ##
+* Shapes are rotated
+* small resolution
+
+## Solution ##
+1. Cut the image into its small parts
+2. Make the small image parts sharp
+3. Resize image according to the size of the shape
+4. Count the pixels of the shape and assign it to a shape name
+
+Lets dive into the different steps in details
+
+### 1. Cut the image into its small parts ###
+Captchas are always 200px width and 150 or 200px in height. So we just extract little images in a 50x50 grid. One little image looks like this:
+
+![ks](/docs/out5.png)
+
+(Extracted part of the original Captcha)
+
+### 2. Make the small image parts sharp ###
+We first do a gaussian blur and then use the image-pixelizer to reduce the colors present in the image to just 2 (we always have only to colors in every small image).
+This will also sharpen up the image
+
+![ks](/docs/out5_1.png)
+
+(Captcha with only 2 colors)
+
+### 3. Resize image according to the size of the shape ###
+Now we use a self writen bucket tool from the center of the image (25px,25px) and fill with wite color.
+
+![ks](/docs/out5_2.png)
+
+(Captcha with white shape)
+
+
+This way we can remove the number in the image. We need this because we want to find the pixel with the greatest distance from the center.
+
+![ks](/docs/out5_3_withDistance.png)
+
+(Captcha with pixel marked with the heighest distance -> the red pixel in the red circle)
+
+
+With this distance we resize the image because we know how "big" the shape is. So when we compair the pixel count, all shapes have the same size. 
+
+![ks](/docs/out5_4.png)
+
+(Captcha with white shape)
+
+
+Now we count the pixels that are not black:
+
+![ks](/docs/out5_5.png)
+
+(Counted pixels are marked red: 3491 pixels)
+
+Now we assign these counts to our list. This can be done because every shape has less pixels the more corners it has:
+
+```Circle > 3850 px
+6 Corners > 3300 px
+5 Corners > 3000 px
+4 Corners > 2500 px
+Circle > 0```
+
+In this case 3491 > 3300 ... so we guess it as 6 corner shape (Hexagon) 
+So we get result like this for the whole captcha:
+
+![ks](/docs/consoleOutFilejoker.PNG)
+
+(Console log for the captcha)
+
+## Conclution ##
+
+In my tests this is working for like 95% of the shapes. Recognize rectangels and circles is very easy because the difference of the pixels to the next shape is very big.
