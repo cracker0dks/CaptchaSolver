@@ -65,7 +65,7 @@ Doc on how it is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 ### 6 Digits Captcha
 ![ks](/docs/filejoker.png)
 
-Doc on how it is solved: coming soon!
+Doc on how it is solved: [HERE](docs/howToSolveGeoCaptchasWalkthrough.md)
 
 ## Old captchas (not supported anymore)
 Download v1.x to get the code for solving this captchas!
