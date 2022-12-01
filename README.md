@@ -9,6 +9,7 @@ Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to 
 * tezfiles.com
 * depositfiles.com
 * publish2.me
+* filejoker.net
 
 ## Installation Windows
 1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.0.2/CaptchaSolver-v2.0.2_standalone_win.zip)
@@ -56,10 +57,15 @@ This comes in handy, if the host changed the captcha type and you have to deacti
 To reactivate them, just copy them back in and restart JD2
 
 ## Supported Types of Captchas
-### 6 Digits Captcha (NEW)
+### 6 Digits Captcha
 ![ks](/docs/i1.jpg)
 
 Doc on how it is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
+
+### 6 Digits Captcha
+![ks](/docs/filejoker.png)
+
+Doc on how it is solved: coming soon!
 
 ## Old captchas (not supported anymore)
 Download v1.x to get the code for solving this captchas!

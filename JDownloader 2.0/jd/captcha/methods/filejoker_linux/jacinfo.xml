@@ -1,0 +1,4 @@
+<jDownloader>
+  <method type="extern" os="linux" name="filejokercaptcha_linux" services="filejoker.net;" />
+  <command cmd="tools/offlineCaptchaSolver/filejoker.sh" src="tools/offlineCaptchaSolver/input.gif" dst="tools/offlineCaptchaSolver/result.txt" />
+</jDownloader>
