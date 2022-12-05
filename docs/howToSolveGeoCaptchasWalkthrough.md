@@ -70,11 +70,13 @@ Now we count the pixels that are not black:
 
 Now we assign these counts to our list. This can be done because every shape has less pixels the more corners it has:
 
-```Circle > 3850 px
+```
+Circle > 3850 px
 6 Corners > 3300 px
 5 Corners > 3000 px
 4 Corners > 2500 px
-Circle > 0```
+Circle > 0
+```
 
 In this case 3491 > 3300 ... so we guess it as 6 corner shape (Hexagon) 
 So we get result like this for the whole captcha:
