@@ -62,7 +62,7 @@ To reactivate them, just copy them back in and restart JD2
 
 Doc on how it is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
-### 6 Digits Captcha
+### Geometrical Captcha
 ![ks](/docs/filejoker.png)
 
 Doc on how it is solved: [HERE](docs/howToSolveGeoCaptchasWalkthrough.md)
