@@ -1,4 +1,0 @@
-<jDownloader>
-  <method type="extern" os="windows" name="kscaptcha_win" services="k2s.cc;keep2share.cc;fileboom.me;depositfiles.com;tezfiles.com;publish2.me;" />
-  <command cmd="tools\offlineCaptchaSolver\keep2share.cc.bat" src="tools\offlineCaptchaSolver\input.gif" dst="tools\offlineCaptchaSolver\result.txt" />
-</jDownloader>

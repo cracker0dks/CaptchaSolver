@@ -1,7 +1,7 @@
 # JDownloader 2 Offline Captcha solver
 JDownloader already solves a lot of captchas on its own, but for some hosts you have to input the result by hand. This tool reduces the list of unsupported hosts.
 
-Using [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) as neuronal Network to solve captchas!
+Using Javascript and [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) neuronal Network to solve captchas!
 
 ## Supported Hosts:
  * keep2share.cc / k2s.cc;
