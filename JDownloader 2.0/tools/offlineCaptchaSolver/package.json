@@ -5,7 +5,7 @@
   "main": "ocr.js",
   "dependencies": {
     "image-pixelizer": "^1.1.0",
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

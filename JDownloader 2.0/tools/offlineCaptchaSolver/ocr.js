@@ -47,6 +47,27 @@ if (what2Scan == "keep2share.cc") {
 //Solving keep2share.cc new captchas
 function getKeep2share(file, callback) {
     Jimp.read(file).then(image => {
+                
+        image.rgba(false).greyscale()
+
+        for (var x = 0; x < image.bitmap.width; x++) {
+            for (var y = 0; y < image.bitmap.height; y++) {
+
+                let currentColor = image.getPixelColor(x, y);
+
+                var rgb = Jimp.intToRGBA(currentColor);
+                if (rgb.r < 253) {
+                    
+
+                    let newVal = rgb.r -120;
+                    newVal= newVal<0? 0:newVal;
+
+                    image.setPixelColor(Jimp.rgbaToInt(newVal, newVal, newVal, 255), x, y);
+                }
+            }
+        }
+
+        image = image.clone();
         image.write('./darknet64/temp.jpg', function () {
             let result = execSync('cd darknet64 && ' + darknetExec + ' detector test data/obj.data yolov3tinyobj.cfg yolov3tinyobjLast.weights -dont_show temp.jpg');
             let resultString = result.toString('utf8');
