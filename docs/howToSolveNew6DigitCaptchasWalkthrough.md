@@ -94,3 +94,5 @@ after all is done.
 ## Conclution & thoughts ##
 With accuracy above 98% I'm more than happy with the result.
 Feature detection could have worked, but Neuronal Networks are the future :)
+
+EDIT 22.01.2023: They added colors to the captcha, so we converted the captcha to black and white first.

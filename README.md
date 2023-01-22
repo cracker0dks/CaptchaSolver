@@ -58,7 +58,7 @@ To reactivate them, just copy them back in and restart JD2
 
 ## Supported Types of Captchas
 ### 6 Digits Captcha
-![ks](/docs/i1.jpg)
+![ks](/docs/07d9b0cdf598be2a6e734f793a19831d.jpg)
 
 Doc on how it is solved: [HERE](docs/howToSolveNew6DigitCaptchasWalkthrough.md)
 
