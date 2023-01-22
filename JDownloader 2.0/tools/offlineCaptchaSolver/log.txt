@@ -1,19 +1,5 @@
 {
-  "host": "filejoker.net",
-  "text": "1,3",
-  "confidence": {
-    "0": "Circle 4121",
-    "1": "Circle 4064",
-    "2": "4 Corners 2858",
-    "3": "Circle 4126",
-    "4": "6 Corners 3341",
-    "5": "5 Corners 3286",
-    "6": "5 Corners 3250",
-    "7": "4 Corners 2688",
-    "8": "4 Corners 2904",
-    "9": "6 Corners 3403",
-    "10": "3 Corners 2013",
-    "11": "6 Corners 3351",
-    "12": "3 Corners 1882"
-  }
+  "host": "keep2share.cc",
+  "text": "fwzR0F",
+  "confidence": 99
 }

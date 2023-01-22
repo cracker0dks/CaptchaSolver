@@ -47,7 +47,7 @@ if (what2Scan == "keep2share.cc") {
 //Solving keep2share.cc new captchas
 function getKeep2share(file, callback) {
     Jimp.read(file).then(image => {
-                
+
         image.rgba(false).greyscale()
 
         for (var x = 0; x < image.bitmap.width; x++) {
@@ -57,10 +57,8 @@ function getKeep2share(file, callback) {
 
                 var rgb = Jimp.intToRGBA(currentColor);
                 if (rgb.r < 253) {
-                    
 
-                    let newVal = rgb.r -120;
-                    newVal= newVal<0? 0:newVal;
+                    let newVal = 0;
 
                     image.setPixelColor(Jimp.rgbaToInt(newVal, newVal, newVal, 255), x, y);
                 }
@@ -69,37 +67,39 @@ function getKeep2share(file, callback) {
 
         image = image.clone();
         image.write('./darknet64/temp.jpg', function () {
-            let result = execSync('cd darknet64 && ' + darknetExec + ' detector test data/obj.data yolov3tinyobj.cfg yolov3tinyobjLast.weights -dont_show temp.jpg');
-            let resultString = result.toString('utf8');
-            //console.log(resultString);
+            setTimeout(function () {
+                let result = execSync('cd darknet64 && ' + darknetExec + ' detector test data/obj.data yolov4-tiny-custom.cfg yolov4-tiny-custom_last.weights -dont_show temp.jpg');
+                let resultString = result.toString('utf8');
+                //console.log(resultString);
 
-            var lines = resultString.split(EOL);
-            var valdResA = [];
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                if (line.indexOf(":") !== -1 && line.indexOf("%") !== -1) {
-                    valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") })
-                }
-            }
-            while (valdResA.length > 6) { //Remove letters with lowest props
-                var sma = 100; //Smallest confidence
-                var index = 0; //Index of char with smallest confidence
-                for (var i = 0; i < valdResA.length; i++) {
-                    if (sma > valdResA[i]["p"]) {
-                        sma = valdResA[i]["p"];
-                        index = i;
+                var lines = resultString.split(EOL);
+                var valdResA = [];
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    if (line.indexOf(":") !== -1 && line.indexOf("%") !== -1) {
+                        valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") })
                     }
                 }
-                valdResA.splice(index, 1);
-            }
-            var text = "";
-            var confidence = 0;
-            for (var i = 0; i < valdResA.length; i++) {
-                text += valdResA[i]["c"];
-                confidence += parseFloat(valdResA[i]["p"]);
-            }
-            confidence = Math.round(confidence / 6);
-            callback({ host: what2Scan, text: text, confidence: confidence });
+                while (valdResA.length > 6) { //Remove letters with lowest props
+                    var sma = 100; //Smallest confidence
+                    var index = 0; //Index of char with smallest confidence
+                    for (var i = 0; i < valdResA.length; i++) {
+                        if (sma > valdResA[i]["p"]) {
+                            sma = valdResA[i]["p"];
+                            index = i;
+                        }
+                    }
+                    valdResA.splice(index, 1);
+                }
+                var text = "";
+                var confidence = 0;
+                for (var i = 0; i < valdResA.length; i++) {
+                    text += valdResA[i]["c"];
+                    confidence += parseFloat(valdResA[i]["p"]);
+                }
+                confidence = Math.round(confidence / 6);
+                callback({ host: what2Scan, text: text, confidence: confidence });
+            }, 200)
         });
 
     }).catch(err => {
@@ -204,7 +204,7 @@ function getFilejoker(file, callback) {
                             solution = solution == "" ? gImgCnt : solution + "," + gImgCnt;
                         }
                         console.log(gImgCnt, localSolution, pixelCount)
-                        confidence[gImgCnt] = localSolution + " "+ pixelCount;
+                        confidence[gImgCnt] = localSolution + " " + pixelCount;
                         CPimage.write("out" + gImgCnt + "_5.png")
 
                         gImgCnt++;
