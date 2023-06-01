@@ -7,7 +7,6 @@ Using Javascript and [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) neuronal
  * keep2share.cc / k2s.cc;
 * fileboom.me
 * tezfiles.com
-* depositfiles.com
 * publish2.me
 * filejoker.net
 
