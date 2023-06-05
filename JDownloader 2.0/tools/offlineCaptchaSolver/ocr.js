@@ -19,7 +19,7 @@ console.log("Running ->", what2Scan);
 if (what2Scan == "keep2share.cc") {
     console.log("keep2share.cc");
     getKeep2share(inputPic, function (content) {
-        fs.writeFile('result.txt', content["text"], (err) => {
+        fs.writeFile('result.txt', content["text"].toString(), (err) => {
             if (err) throw err;
 
             fs.writeFile('log.txt', JSON.stringify(content, false, 2), (err) => {
@@ -31,7 +31,7 @@ if (what2Scan == "keep2share.cc") {
 } else if (what2Scan == "filejoker.net") {
     console.log(what2Scan);
     getFilejoker(inputPic, function (content) {
-        fs.writeFile('result.txt', content["text"], (err) => {
+        fs.writeFile('result.txt', content["text"].toString(), (err) => {
             if (err) throw err;
 
             fs.writeFile('log.txt', JSON.stringify(content, false, 2), (err) => {
