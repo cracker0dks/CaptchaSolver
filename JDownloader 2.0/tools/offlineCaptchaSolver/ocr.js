@@ -34,6 +34,7 @@ if (what2Scan == "keep2share.cc") {
         fs.writeFile('result.txt', content["text"].toString(), (err) => {
             if (err) throw err;
 
+            console.log("Write log file...")
             fs.writeFile('log.txt', JSON.stringify(content, false, 2), (err) => {
                 process.exit();
             });
@@ -124,7 +125,6 @@ function getFilejoker(file, callback) {
                     //Dont read the black ones
                 } else {
                     if (xxxx < image.bitmap.width - 1 && yyyy < image.bitmap.height - 1) {
-
                         CPimage.crop(xxxx, yyyy, 50, 50);
                         CPimage.write("out" + gImgCnt + "_0.png");
                         CPimage.convolute(kernels.blur);
@@ -212,8 +212,10 @@ function getFilejoker(file, callback) {
                 }
             }
         }
+        console.log("Done getting shapes from images! Going into callback!")
         callback({ host: what2Scan, text: solution, confidence: confidence });
 
+        console.log("Done! Delete old files now!")
         for (var i = 0; i < 20; i++) { //Delete all old files
             for (var k = 0; k < 10; k++) {
                 let path = "out" + i + "_" + k + ".png";
