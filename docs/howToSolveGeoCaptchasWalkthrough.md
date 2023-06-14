@@ -23,7 +23,7 @@ you need to put in the numbers of the shape you see in the upper left corner
 3. Resize image according to the size of the shape
 4. Count the pixels of the shape and assign it to a shape name and compair it to the shape in the upper left corner
 
-Lets dive into the different steps in details
+Lets dive into the different steps in detail
 
 ### 1. Cut the image into its small parts ###
 Captchas are always 200px width and 150 or 200px in height. So we just extract little images in a 50x50 grid. One little image looks like this:
