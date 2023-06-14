@@ -48,7 +48,7 @@ Now we use a (self written) bucket fill tool from the center of the image (25px,
 (Captcha with white shape)
 
 
-This way we can remove the number displayed of the little image (in the upper left corner). We need this because we want to find the pixel with the greatest distance from the center next. We can get the distance using the ![Math.hypot()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de) function on all white pixels and choose the one with the heighest distance.
+This way we can remove the number displayed in the little image (in the upper left corner). We need this because we want to find the pixel with the greatest distance from the center next. We can get the distance using the ![Math.hypot()]([https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de)) function on all white pixels and choose the one with the heighest distance.
 
 ![ks](/docs/out5_3_withDistance.png)
 
