@@ -48,7 +48,7 @@ Now we use a (self written) bucket fill tool from the center of the image (25px,
 (Captcha with white shape)
 
 
-This way we can remove the number displayed in the little image (in the upper left corner). We need this because we want to find the pixel with the greatest distance from the center next. We can get the distance using the ![Math.hypot()]([https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de)) function on all white pixels and choose the one with the heighest distance.
+This way we can remove the number displayed in the little image (in the upper left corner). We need this because we want to find the pixel with the greatest distance from the center next. We can get the distance using the [Math.hypot()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot?retiredLocale=de) function on all white pixels and choose the one with the heighest distance.
 
 ![ks](/docs/out5_3_withDistance.png)
 
@@ -89,7 +89,7 @@ Circle > 0
 ```
 
 In this case 3491 > 3300 ... so we guess it as 6 corner shape (Hexagon) 
-So we get result like this for the whole captcha and compair it the shape in the upper left corner to get a result:
+So we get resultslike this for every shape of the captcha and compair it the shape in the upper left corner to get a result:
 
 ![ks](/docs/consoleOutFilejoker.PNG)
 
@@ -99,4 +99,4 @@ So we get result like this for the whole captcha and compair it the shape in the
 ## Conclution ##
 
 In my tests this is working for like 95% of the shapes. That said, we have about 10 shapes in each captcha, so we are getting about >50% Success rate over all (thats enough for this kind of task). Recognize rectangels and circles is very easy because the difference of the pixels to the next shape is very big. 
-In between it is not always be correct but it seems to be sufficient. 
+In between it is not always correct but it seems to be sufficient. 
