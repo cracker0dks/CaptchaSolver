@@ -25,7 +25,7 @@ Using Javascript and [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) neuronal
 
 ### Compile darknet for a different architecture on your own
 1. Clone this repository
-2. Download and compile [AlexeyAB's fork of darknet]([https://github.com/AlexeyAB/darknet](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make))
+2. Download and compile [AlexeyAB's fork of darknet](https://github.com/AlexeyAB/darknet](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make )
 3. Copy (and override) the resulting darknet executable to `/JDownloader 2.0/tools/offlineCaptchaSolver/darknet64/darknet`
 4. Install NodeJS and make sure it's available in your PATH
 5. Copy the "JDownloader 2.0" content into your current JD2 folder (probably `~/.jd` if you installed via flatpack try the path: /home/<username>/.var/app/org.jdownloader.JDownloader/data/jdownloader)
