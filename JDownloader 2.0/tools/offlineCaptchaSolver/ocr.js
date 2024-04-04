@@ -74,6 +74,7 @@ function getKeep2share(file, callback) {
                 //console.log(resultString);
 
                 var lines = resultString.split(EOL);
+                
                 var valdResA = [];
                 for (var i = 0; i < lines.length; i++) {
                     var line = lines[i];
@@ -81,6 +82,13 @@ function getKeep2share(file, callback) {
                         valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") })
                     }
                 }
+
+                for(var i = valdResA.length-1; i>=0; i--) { //Remove "I" because big "i" and small "L" -> "l" have the same char in this font
+                    if(valdResA[i]["c"] == "I") {
+                        valdResA.splice(i, 1);
+                    }
+                }
+
                 while (valdResA.length > 6) { //Remove letters with lowest props
                     var sma = 100; //Smallest confidence
                     var index = 0; //Index of char with smallest confidence
