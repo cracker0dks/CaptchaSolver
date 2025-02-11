@@ -4,11 +4,12 @@ JDownloader already solves a lot of captchas on its own, but for some hosts you 
 Using Javascript and [YOLO DARKNET](https://pjreddie.com/darknet/yolo/) neuronal Network to solve captchas!
 
 ## Supported Hosts:
- * keep2share.cc / k2s.cc;
-* fileboom.me
+* keep2share.cc / k2s.cc
+* fileboom.me / fboom.me
 * tezfiles.com
 * publish2.me
 * filejoker.net
+* depositfiles.com / dfiles.eu
 
 ## Installation Windows
 1. Download the latest standalone zip: [win](https://github.com/cracker0dks/CaptchaSolver/releases/download/v2.1.1/CaptchaSolver-v2.1.1_standalone_win.zip.zip)
