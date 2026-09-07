@@ -1,0 +1,6 @@
+.git
+.gitignore
+docs/
+*.md
+config/
+downloads/

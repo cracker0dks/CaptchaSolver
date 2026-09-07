@@ -1,4 +1,7 @@
+@echo off
+cd /d "%~dp0"
 call checkdeps.bat
+
 
 set "file=result.txt"
 set "timeout=30"

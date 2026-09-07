@@ -1,5 +1,6 @@
 var Jimp = require('jimp'); //For image processing
 var fs = require('fs');
+var path = require('path');
 const { execSync } = require('child_process');
 const { EOL } = require('os');
 
@@ -8,70 +9,83 @@ var white = Jimp.rgbaToInt(255, 255, 255, 255);
 var red = Jimp.rgbaToInt(255, 0, 0, 255);
 var black = Jimp.rgbaToInt(0, 0, 0, 255);
 
+const DEBUG = process.env.DEBUG === 'true';
 const darknetExec = (process.platform === 'win32' ? 'darknet_no_gpu.exe' : './darknet');
 
 var what2Scan = process.argv[2] || "keep2share.cc"; //Start parameter
-var inputPic = 'input.gif';
-//inputPic = 'c2.PNG';
-console.log("Running ->", what2Scan);
+var inputPic = process.env.CAPTCHA_INPUT || process.argv[3] || 'input.gif';
+var resultFile = process.env.CAPTCHA_OUTPUT || 'result.txt';
+var logFile = process.env.CAPTCHA_LOG || 'log.txt';
 
+console.log("Running ->", what2Scan, "Input:", inputPic);
 
 if (what2Scan == "keep2share.cc") {
     console.log("keep2share.cc");
     getKeep2share(inputPic, function (content) {
-        fs.writeFile('result.txt', content["text"].toString(), (err) => {
-            if (err) throw err;
-
-            fs.writeFile('log.txt', JSON.stringify(content, false, 2), (err) => {
-                process.exit();
-            });
-        });
-
-    })
+        try {
+            fs.writeFileSync(resultFile, content["text"].toString());
+            fs.writeFileSync(logFile, JSON.stringify(content, false, 2));
+            console.log("Solved:", content["text"]);
+            process.exit(0);
+        } catch (err) {
+            console.error("Failed writing result file:", err);
+            process.exit(1);
+        }
+    });
 } else if (what2Scan == "filejoker.net") {
     console.log(what2Scan);
     getFilejoker(inputPic, function (content) {
-        fs.writeFile('result.txt', content["text"].toString(), (err) => {
-            if (err) throw err;
-
-            console.log("Write log file...")
-            fs.writeFile('log.txt', JSON.stringify(content, false, 2), (err) => {
-                process.exit();
-            });
-        });
-
-    })
+        try {
+            fs.writeFileSync(resultFile, content["text"].toString());
+            fs.writeFileSync(logFile, JSON.stringify(content, false, 2));
+            console.log("Solved:", content["text"]);
+            process.exit(0);
+        } catch (err) {
+            console.error("Failed writing result file:", err);
+            process.exit(1);
+        }
+    });
 } else {
-    console.log("No function found for: ", what2Scan);
+    console.error("No function found for: ", what2Scan);
+    process.exit(1);
 }
 
 //Solving keep2share.cc new captchas
 function getKeep2share(file, callback) {
+    if (!fs.existsSync(file)) {
+        console.error("Captcha input file does not exist:", file);
+        process.exit(1);
+    }
+
     Jimp.read(file).then(image => {
+        image.rgba(false).greyscale();
 
-        image.rgba(false).greyscale()
-
-        for (var x = 0; x < image.bitmap.width; x++) {
-            for (var y = 0; y < image.bitmap.height; y++) {
-
-                let currentColor = image.getPixelColor(x, y);
-
-                var rgb = Jimp.intToRGBA(currentColor);
-                if (rgb.r < 253) {
-
-                    let newVal = 0;
-
-                    image.setPixelColor(Jimp.rgbaToInt(newVal, newVal, newVal, 255), x, y);
-                }
+        const data = image.bitmap.data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (data[i] < 253) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
             }
         }
 
-        image = image.clone();
-        image.write('./darknet64/temp.jpg', function () {
-            setTimeout(function () {
-                let result = execSync('cd darknet64 && ' + darknetExec + ' detector test data/obj.data yolov4-tiny-custom.cfg yolov4-tiny-custom_last.weights -dont_show temp.jpg');
+
+        const darknetDir = path.join(__dirname, 'darknet64');
+        const tempImgPath = path.join(darknetDir, 'temp.jpg');
+
+        image.write(tempImgPath, function (err) {
+            if (err) {
+                console.error("Failed to write temporary image for darknet:", err);
+                process.exit(1);
+            }
+
+            try {
+                let cmd = darknetExec + ' detector test data/obj.data yolov4-tiny-custom.cfg yolov4-tiny-custom_last.weights -dont_show temp.jpg';
+                let result = execSync(cmd, {
+                    cwd: darknetDir,
+                    stdio: ['pipe', 'pipe', 'pipe']
+                });
                 let resultString = result.toString('utf8');
-                //console.log(resultString);
 
                 var lines = resultString.split(EOL);
                 
@@ -79,12 +93,12 @@ function getKeep2share(file, callback) {
                 for (var i = 0; i < lines.length; i++) {
                     var line = lines[i];
                     if (line.indexOf(":") !== -1 && line.indexOf("%") !== -1) {
-                        valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") })
+                        valdResA.push({ c: line.split(":")[0], p: line.split(": ")[1].replace("%", "") });
                     }
                 }
 
-                for(var i = valdResA.length-1; i>=0; i--) { //Remove "I" because big "i" and small "L" -> "l" have the same char in this font
-                    if(valdResA[i]["c"] == "I") {
+                for (var i = valdResA.length - 1; i >= 0; i--) { //Remove "I" because big "i" and small "L" -> "l" have the same char in this font
+                    if (valdResA[i]["c"] == "I") {
                         valdResA.splice(i, 1);
                     }
                 }
@@ -108,17 +122,28 @@ function getKeep2share(file, callback) {
                 }
                 confidence = Math.round(confidence / 6);
                 callback({ host: what2Scan, text: text, confidence: confidence });
-            }, 200)
+            } catch (execErr) {
+                console.error("Darknet execution error:", execErr.message);
+                if (execErr.stdout) console.error("stdout:", execErr.stdout.toString());
+                if (execErr.stderr) console.error("stderr:", execErr.stderr.toString());
+                process.exit(1);
+            }
         });
 
     }).catch(err => {
-        console.log(err);
+        console.error("Failed to load captcha image:", err);
+        process.exit(1);
     });
 }
 
-function getFilejoker(file, callback) {
-    Jimp.read(file).then(image => {
 
+function getFilejoker(file, callback) {
+    if (!fs.existsSync(file)) {
+        console.error("Captcha input file does not exist:", file);
+        process.exit(1);
+    }
+
+    Jimp.read(file).then(image => {
         var mainImg = "";
         var solution = "";
         var confidence = {};
@@ -126,15 +151,15 @@ function getFilejoker(file, callback) {
         let gImgCnt = 0;
         for (var yOrg = 0; yOrg < 5; yOrg++) {
             for (var xOrg = 0; xOrg < 5; xOrg++) {
-                let CPimage = image.clone();
-                let xxxx = xOrg * 50
-                let yyyy = yOrg * 50
+                let xxxx = xOrg * 50;
+                let yyyy = yOrg * 50;
                 if (yOrg == 0 && xOrg > 0) {
                     //Dont read the black ones
                 } else {
                     if (xxxx < image.bitmap.width - 1 && yyyy < image.bitmap.height - 1) {
+                        let CPimage = image.clone();
                         CPimage.crop(xxxx, yyyy, 50, 50);
-                        CPimage.write("out" + gImgCnt + "_0.png");
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_0.png");
                         CPimage.convolute(kernels.blur);
 
                         let inputBitmap = new Pixelizer.Bitmap(
@@ -155,25 +180,22 @@ function getFilejoker(file, callback) {
                         CPimage.bitmap.height = outputBitmap.height;
                         CPimage.bitmap.data = outputBitmap.data;
 
-                        CPimage = CPimage.clone();
-                        CPimage.write("out" + gImgCnt + "_1.png")
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_1.png");
 
-                        fillBucket(CPimage, 25, 25, white)
+                        fillBucket(CPimage, 25, 25, white);
 
-                        CPimage.write("out" + gImgCnt + "_2.png")
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_2.png");
                         let maxDistance = 0;
                         var fx = 0;
                         var fy = 0;
-                        CPimage = CPimage.clone();
 
-                        //CPimage.convolute(kernels.edgedetect);
                         for (var x = 0; x < CPimage.bitmap.width; x++) {
                             for (var y = 0; y < CPimage.bitmap.height; y++) {
                                 let currentColor = CPimage.getPixelColor(x, y);
                                 if (currentColor != white) {
                                     CPimage.setPixelColor(black, x, y);
                                 } else {
-                                    var d = distance(x, y, 25, 25)
+                                    var d = distance(x, y, 25, 25);
                                     if (d > maxDistance) {
                                         maxDistance = d;
                                         fx = x;
@@ -183,24 +205,23 @@ function getFilejoker(file, callback) {
                             }
                         }
 
-                        //CPimage.setPixelColor(red, fx, fy);
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_3.png");
 
-                        CPimage.write("out" + gImgCnt + "_3.png")
-
-                        var maxD = distance(50, 50, 25, 25)
-
+                        var maxD = distance(50, 50, 25, 25);
                         var dDiv = maxD / maxDistance;
 
                         CPimage.resize(50 * dDiv, Jimp.AUTO);
-                        CPimage.write("out" + gImgCnt + "_4.png")
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_4.png");
 
                         let pixelCount = 0;
-                        for (var x = 0; x < CPimage.bitmap.width; x++) {
-                            for (var y = 0; y < CPimage.bitmap.height; y++) {
-                                let currentColor = CPimage.getPixelColor(x, y);
-                                if (currentColor != black) {
-                                    CPimage.setPixelColor(red, x, y);
-                                    pixelCount++;
+                        const pData = CPimage.bitmap.data;
+                        for (let i = 0; i < pData.length; i += 4) {
+                            if (pData[i] !== 0 || pData[i + 1] !== 0 || pData[i + 2] !== 0) {
+                                pixelCount++;
+                                if (DEBUG) {
+                                    pData[i] = 255;
+                                    pData[i + 1] = 0;
+                                    pData[i + 2] = 0;
                                 }
                             }
                         }
@@ -211,61 +232,63 @@ function getFilejoker(file, callback) {
                         } else if (mainImg == localSolution) {
                             solution = solution == "" ? gImgCnt : solution + "," + gImgCnt;
                         }
-                        console.log(gImgCnt, localSolution, pixelCount)
+                        if (DEBUG) console.log(gImgCnt, localSolution, pixelCount);
                         confidence[gImgCnt] = localSolution + " " + pixelCount;
-                        CPimage.write("out" + gImgCnt + "_5.png")
+                        if (DEBUG) CPimage.write("out" + gImgCnt + "_5.png");
 
                         gImgCnt++;
                     }
                 }
             }
         }
-        console.log("Done getting shapes from images! Going into callback!")
         callback({ host: what2Scan, text: solution, confidence: confidence });
 
-        console.log("Done! Delete old files now!")
-        for (var i = 0; i < 20; i++) { //Delete all old files
-            for (var k = 0; k < 10; k++) {
-                let path = "out" + i + "_" + k + ".png";
-                if (fs.existsSync(path)) {
-                    fs.unlinkSync(path)
+        if (DEBUG) {
+            for (var i = 0; i < 20; i++) {
+                for (var k = 0; k < 10; k++) {
+                    let p = "out" + i + "_" + k + ".png";
+                    if (fs.existsSync(p)) {
+                        fs.unlinkSync(p);
+                    }
                 }
             }
         }
-        console.log("solution", solution)
+    }).catch(err => {
+        console.error("Failed processing filejoker captcha:", err);
+        process.exit(1);
     });
+
 
     const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
 
     function fillBucket(image, startX, startY, newColor) { // Start painting with paint bucket tool starting from pixel specified by startX and startY
-        var pixelStack = [[startX, startY]];
-        var doneObj = {};
+        const w = image.bitmap.width;
+        const h = image.bitmap.height;
+        const colorToReplace = image.getPixelColor(startX, startY);
+        if (colorToReplace === newColor) return;
 
-        var colorToReplace = image.getPixelColor(startX, startY)
+        const visited = new Uint8Array(w * h);
+        const stackX = [startX];
+        const stackY = [startY];
 
-        while (pixelStack.length) {
+        while (stackX.length > 0) {
+            const x = stackX.pop();
+            const y = stackY.pop();
 
-            newPos = pixelStack.pop();
-            x = newPos[0];
-            y = newPos[1];
-
-            if (!doneObj[x + "," + y] && y > 0 && y < image.bitmap.height && x > 0 && x < image.bitmap.width) {
-                doneObj[x + "," + y] = true;
-                // Get current pixel position
-
-                if (colorToReplace == image.getPixelColor(x, y)) {
-                    image.setPixelColor(newColor, x, y);
-                    pixelStack.push([x + 1, y]);
-                    pixelStack.push([x + 1, y + 1]);
-                    pixelStack.push([x + 1, y - 1]);
-                    pixelStack.push([x - 1, y]);
-                    pixelStack.push([x - 1, y + 1]);
-                    pixelStack.push([x - 1, y - 1]);
-                    pixelStack.push([x, y - 1]);
+            if (x > 0 && x < w && y > 0 && y < h) {
+                const idx = y * w + x;
+                if (!visited[idx]) {
+                    visited[idx] = 1;
+                    if (image.getPixelColor(x, y) === colorToReplace) {
+                        image.setPixelColor(newColor, x, y);
+                        stackX.push(x + 1, x + 1, x + 1, x - 1, x - 1, x - 1, x);
+                        stackY.push(y,     y + 1, y - 1, y,     y + 1, y - 1, y - 1);
+                    }
                 }
             }
         }
     }
+
 
     function getGeoFromPixelCnt(pixelCnt) {
         if (pixelCnt > 3850) {
